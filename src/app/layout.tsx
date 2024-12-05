@@ -15,7 +15,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Z-Chat",
-  description: "Chatting platform made with NextJS",
+  description: "Chatting platform",
 };
 
 export default function RootLayout({
