@@ -2,7 +2,7 @@ export default function LoginBox() {
     return (
         <div className="container w-96 m-3 p-3 rounded-lg shadow-centered shadow-slate-500 flex flex-col">
             <div className="">
-                <h1 className="text-emerald-600 font-bold text-center">LOGIN</h1>
+                <h1 className="text-emerald-500 font-bold text-center">LOGIN</h1>
             </div>
             <hr className="mt-2"/>
             <div className="">
