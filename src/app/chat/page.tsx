@@ -1,6 +1,9 @@
+import ChatContainer from "./ChatContainer";
+
 export default function Page() {
-    return (
-      <h1>INI CHAT</h1>
-    );
-  }
-  
+  return (
+    <div className="flex justify-center h-screen items-center">
+      <ChatContainer />
+    </div>
+  );
+}
