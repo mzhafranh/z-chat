@@ -1,11 +1,10 @@
 import ChatList from "./ChatList";
+import ChatReceiver from "./ChatReceiver";
 
 export default function ChatBox() {
     return (
         <div className="container w-10/12 flex flex-col">
-            <div className="rounded-lg shadow-centered shadow-slate-500">
-                <h1 className="font-bold text-gray-500 text-center text-2xl p-5">John Smith</h1>
-            </div>
+            <ChatReceiver/>
             <div className="rounded-lg h-full shadow-centered shadow-slate-500 mt-5 p-5 flex flex-col">
                 <ChatList/>
                 <form>
