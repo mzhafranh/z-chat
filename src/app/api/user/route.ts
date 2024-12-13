@@ -17,10 +17,10 @@ export async function POST(req: Request) {
 
     if (!username || typeof username !== "string") {
         return NextResponse.json(
-          { error: "Invalid or missing 'username' field" },
-          { status: 400 }
+            { error: "Invalid or missing 'username' field" },
+            { status: 400 }
         );
-      }
+    }
 
     console.log(username)
 
@@ -37,15 +37,14 @@ export async function POST(req: Request) {
     }
 }
 
-    // GET handler
-    export async function GET() {
-        try {
-            const users = await prisma.user.findMany();
-            return NextResponse.json(users, { status: 200 });
-        } catch (error) {
-            return NextResponse.json(
-                { error: "Failed to fetch users" },
-                { status: 500 }
-            );
-        }
+export async function GET() {
+    try {
+        const users = await prisma.user.findMany();
+        return NextResponse.json(users, { status: 200 });
+    } catch (error) {
+        return NextResponse.json(
+            { error: "Failed to fetch users", details: error.message },
+            { status: 500 }
+        );
     }
+}
