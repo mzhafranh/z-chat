@@ -1,18 +1,41 @@
+"use client";
+
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../store/slices/userSlice';
+import { RootState } from '../store/store';
+import type { AppDispatch } from '../store/store';
+
 export default function LoginBox() {
+    const [usernameInput, setUsernameInput] = useState('');
+    const dispatch = useDispatch<AppDispatch>();
+    const { username } = useSelector((state: RootState) => state.user);
+
+    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (usernameInput.trim()) {
+            dispatch(loginUser({username: usernameInput}));
+        }
+    };
+
     return (
         <div className="container w-96 m-3 p-3 rounded-lg shadow-centered shadow-slate-500 flex flex-col">
             <div className="">
                 <h1 className="text-emerald-500 font-bold text-center">LOGIN</h1>
+                <h1 className="text-sky-500 font-bold text-center">{username}</h1>
             </div>
             <hr className="mt-2"/>
             <div className="">
-                <form action="" className="w-full">
+                <form action="" onSubmit={handleLogin} className="w-full">
                     <input
                         type="text"
-                        id="name"
-                        name="name"
+                        id="username"
+                        name="username"
                         className="mt-4 block w-full p-2 rounded border border-solid border-gray-300 shadow-md"
                         placeholder="Username"
+                        value={usernameInput}
+                        onChange={(e) => setUsernameInput(e.target.value)}
                         required
                     />
                     <button
