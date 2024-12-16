@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 export function middleware(req) {
     const authHeader = req.headers.get('authorization'); // Get the Authorization header
-    const token = authHeader && authHeader.split(' ')[1]; // Extract the token after "Bearer"
+    const token = authHeader?.split(' ')[1]; // Extract the token after "Bearer"
 
     if (!token) {
         // If no token, redirect to login
@@ -12,12 +12,18 @@ export function middleware(req) {
 
     try {
         // Verify the token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // Attach user info to the request (Optional)
-        req.user = decoded;
+        jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+            if (err) {
+                if (err.name === 'TokenExpiredError') {
+                    console.log('Token expired');
+                    return NextResponse.redirect(new URL('/login', req.url));
+                }
+                console.log('Invalid token');
+                return NextResponse.redirect(new URL('/login', req.url));
+            }
+        });
     } catch (err) {
-        console.error('Token verification failed:', err);
+        console.log('Token verification failed:', err);
 
         // Redirect to login on invalid token
         return NextResponse.redirect(new URL('/login', req.url));

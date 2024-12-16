@@ -13,7 +13,6 @@ export default function LoginBox() {
 
     const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
         if (usernameInput.trim()) {
             dispatch(loginUser({username: usernameInput}));
         }
