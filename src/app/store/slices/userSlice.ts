@@ -1,8 +1,13 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { Verify } from 'crypto';
 import jwt from 'jsonwebtoken';
 
 interface userLoginParams {
     username: string;
+}
+
+interface verifyTokenParams {
+    token: string;
 }
 
 interface UserState {
@@ -59,7 +64,7 @@ export const autoLogin = createAsyncThunk(
                 localStorage.setItem("authToken", accessToken);
                 dispatch(setError("")); // Clear any previous errors
                 dispatch(login(user.username))
-                
+                window.location.href = '/chat'
             }
         } catch (err) {
             dispatch(setError("An error occurred while logging in."));
@@ -90,7 +95,29 @@ export const loginUser = createAsyncThunk(
             console.log('sampai sebelum set error')
             dispatch(setError("")); // Clear any previous errors
             dispatch(login(username))
-            
+            window.location.href = '/chat'
+        } catch (err) {
+            dispatch(setError("An error occurred while logging in."));
+            console.error(err);
+        }
+    }
+)
+
+export const verifyToken = createAsyncThunk(
+    'user/userLogin',
+    async ({ token }: verifyTokenParams, { dispatch }) => {
+        try {
+            const response = await fetch("/api/auth", {
+                method: "POST",
+                headers: { 'Authorization': `Bearer ${token}`,"Content-Type": "application/json" },
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                dispatch(setError(data.error || "Token Verification Failed"));
+                return false;
+            }
+            return true;
         } catch (err) {
             dispatch(setError("An error occurred while logging in."));
             console.error(err);

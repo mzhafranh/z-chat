@@ -13,7 +13,7 @@ export const createAccessToken = (username: string) => {
 
 export const createRefreshToken = (username: string) => {
     if (!process.env.JWT_REFRESH_SECRET) {
-        throw new Error("JWT_SECRET is not defined in the environment variables");
+        throw new Error("JWT_REFRESH_SECRET is not defined in the environment variables");
     }
     return jwt.sign(
         { username },

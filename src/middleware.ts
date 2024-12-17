@@ -6,8 +6,7 @@ export function middleware(req) {
     const token = authHeader?.split(' ')[1]; // Extract the token after "Bearer"
 
     if (!token) {
-        // If no token, redirect to login
-        return NextResponse.redirect(new URL('/login', req.url));
+        return NextResponse.json({ error: "No Access Token"}, { status: 401 })
     }
 
     try {
@@ -16,24 +15,20 @@ export function middleware(req) {
             if (err) {
                 if (err.name === 'TokenExpiredError') {
                     console.log('Token expired');
-                    return NextResponse.redirect(new URL('/login', req.url));
+                    return NextResponse.json({ error: "Token Expired"}, { status: 401 })
                 }
                 console.log('Invalid token');
-                return NextResponse.redirect(new URL('/login', req.url));
+                return NextResponse.json({ error: "Invalid Token"}, { status: 401 })
             }
         });
     } catch (err) {
-        console.log('Token verification failed:', err);
-
-        // Redirect to login on invalid token
-        return NextResponse.redirect(new URL('/login', req.url));
+        console.log('Token Verification Failed:', err);
+        return NextResponse.json({ error: "Token Verification Failed"}, { status: 500 })
     }
-
-    // If valid, proceed to the requested page
     return NextResponse.next();
 }
 
 // Specify which routes the middleware should run on
 export const config = {
-    matcher: ['/chat', '/'], // Run the middleware on these routes
+    matcher: ['/api'], // Run the middleware on these routes
 };
