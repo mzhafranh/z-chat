@@ -29,4 +29,4 @@ export function verifyToken(token: string, secret: string) {
             resolve(user);
         });
     });
-}
+};

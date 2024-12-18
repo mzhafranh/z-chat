@@ -1,4 +1,29 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+
+interface getContactsParams {
+  token: string | null;
+}
+
+interface Contact {
+  id: string,
+  username: string
+}
+
+interface Message {
+  id: string,
+  content: string,
+  senderId: string,
+  recipientId: string,
+  timestamp: string
+}
+
+interface ChatState {
+  currentContact: string | null,
+  contactList: Contact[],
+  messages: Message[],
+  loading: boolean,
+  error: string | null,
+}
 
 // Example: Fetch chat messages from an API
 export const fetchMessages = createAsyncThunk(
@@ -34,8 +59,26 @@ export const sendMessage = createAsyncThunk(
   }
 );
 
+export const getContacts = createAsyncThunk(
+  'chat/getContacts',
+  async ({ token }: getContactsParams, { dispatch }) => {
+    try {
+      const response = await fetch("/api/user", {
+        method: "GET",
+        headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) throw new Error('Failed to get contacts');
+      const data = await response.json();
+      return data; // Message data
+    } catch (err) {
+      console.log(err);
+    }
+  }
+)
+
 // Initial state
-const initialState = {
+const initialState: ChatState = {
   currentContact: '',
   contactList: [],
   messages: [], // Array to hold chat messages
@@ -55,6 +98,19 @@ const chatSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Handle getContacts
+      .addCase(getContacts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getContacts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.contactList = action.payload; // Set messages
+      })
+      .addCase(getContacts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       // Handle fetchMessages
       .addCase(fetchMessages.pending, (state) => {
         state.loading = true;

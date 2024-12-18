@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import ChatContainer from "./ChatContainer";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { AppDispatch } from "../store/store";
 import { verifyToken } from "../store/slices/userSlice";
 

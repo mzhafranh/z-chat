@@ -29,7 +29,6 @@ export async function middleware(req) {
         return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
     }
 
-    return NextResponse.next();
 }
 
 // Specify which routes the middleware should run on

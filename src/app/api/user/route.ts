@@ -39,7 +39,12 @@ export async function POST(req: Request) {
 
 export async function GET() {
     try {
-        const users = await prisma.user.findMany();
+        const users = await prisma.user.findMany({
+            select: {
+              id: true,
+              username: true,
+            },
+          });
         return NextResponse.json(users, { status: 200 });
     } catch (error) {
         return NextResponse.json(

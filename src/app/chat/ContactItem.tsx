@@ -1,11 +1,18 @@
-export default function ContactItem() {
+interface ContactItemProps {
+    id: string;
+    username: string;
+    currentContact: string | null;
+}
+
+const ContactItem: React.FC<ContactItemProps> = ({ id, username, currentContact }) => {
     return (
         <>
-            <h1 className="text-white text-md bg-blue-500 px-4 py-2">John Smith</h1>
-            <h1 className="text-gray-500 text-md px-4 py-2">Cid Kagenou</h1>
-            <h1 className="text-gray-500 text-md px-4 py-2">Shadow</h1>
-            <h1 className="text-gray-500 text-md px-4 py-2">Mundane Mann</h1>
-            <h1 className="text-gray-500 text-md px-4 py-2">Jimina Senen</h1>
+            {username === currentContact ? (
+                <h1 className="text-white text-md bg-blue-500 px-4 py-2">{username}</h1>
+            ) : (
+                <h1 className="text-gray-500 text-md px-4 py-2">{username}</h1>
+            )}
         </>
     )
 }
+export default ContactItem;
