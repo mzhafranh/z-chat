@@ -16,16 +16,18 @@ export default function Home() {
     } else {
         dispatch(verifyToken({ token }))
             .then((action) => {
-                // Access the payload returned by the thunk
-                console.log("Verified:", action.payload);
+                // console.log("Verified:", action.payload);
                 if (!action.payload) {
-                    window.location.href = "/login";
+                  window.location.href = "/login";
+                } else {
+                  window.location.href = "/chat";
                 }
             })
             .catch((err) => {
                 console.error("Error verifying token:", err);
                 window.location.href = "/login";
             });
+      
     }
 }, [token, dispatch]);
 

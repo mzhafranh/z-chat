@@ -2,6 +2,10 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Verify } from 'crypto';
 import jwt from 'jsonwebtoken';
 
+interface autoLoginParams {
+    refreshToken: string | null;
+}
+
 interface userLoginParams {
     username: string;
 }
@@ -26,10 +30,9 @@ const initialState: UserState = {
 
 export const autoLogin = createAsyncThunk(
     'user/autoLogin',
-    async ({ }, { dispatch }) => {
+    async ({refreshToken}: autoLoginParams, { dispatch }) => {
         try {
-            const refreshToken = localStorage.getItem("refreshToken");
-            console.log(refreshToken)
+            console.log("refreshToken", refreshToken)
             if (!refreshToken) {
                 console.log("Auto Login: No Refresh Token Detected")
                 return;
@@ -59,7 +62,6 @@ export const autoLogin = createAsyncThunk(
                     dispatch(setError(data.error || "Login failed"));
                     return;
                 }
-
                 const { accessToken, user } = await response.json();
                 localStorage.setItem("authToken", accessToken);
                 dispatch(setError("")); // Clear any previous errors

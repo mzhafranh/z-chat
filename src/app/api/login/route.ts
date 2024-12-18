@@ -46,13 +46,20 @@ export async function POST(req: Request) {
             return NextResponse.json({ accessToken, refreshToken }, { status: 200 });
         }
     } else {
-        const user = await prisma.user.findUnique({
-            where: { refreshToken },
-        });
-        if (!user){
-            return NextResponse.json({ error: "Failed to find user"}, { status: 500 })
+        try{
+            const user = await prisma.user.findUnique({
+                where: { refreshToken },
+            });
+    
+            if (!user){
+                return NextResponse.json({ error: "Failed to find user"}, { status: 500 })
+            }
+
+            const accessToken = createAccessToken(user.username);
+            return NextResponse.json({ user, accessToken, refreshToken }, { status: 200 });
+        } catch (error){
+            return NextResponse.json({ error: "Failed to find user", details: error.message }, { status: 500 })
         }
-        const accessToken = createAccessToken(user.username);
-        return NextResponse.json({ user, accessToken, refreshToken }, { status: 200 });
+        
     }
 }
