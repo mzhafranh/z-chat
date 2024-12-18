@@ -1,14 +1,5 @@
 import { NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
-
-function verifyToken(token, secret) {
-    return new Promise((resolve, reject) => {
-        jwt.verify(token, secret, (err, user) => {
-            if (err) return reject(err);
-            resolve(user);
-        });
-    });
-}
+import { verifyToken } from '../helpers/util';
 
 export async function POST(req: Request) {
     const authHeader = req.headers.get('authorization');

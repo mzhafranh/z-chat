@@ -21,3 +21,12 @@ export const createRefreshToken = (username: string) => {
         { expiresIn: '7d' } // Refresh tokens have a longer lifespan
     );
 };
+
+export function verifyToken(token: string, secret: string) {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, secret, (err, user) => {
+            if (err) return reject(err);
+            resolve(user);
+        });
+    });
+}

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from "jose";
 
-export function middleware(req) {
+export async function middleware(req) {
     const authHeader = req.headers.get('authorization'); // Get the Authorization header
     const token = authHeader?.split(' ')[1]; // Extract the token after "Bearer"
 
@@ -17,21 +17,18 @@ export function middleware(req) {
     }
 
     try {
-        // Verify the token
-        jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-            if (err) {
-                if (err.name === 'TokenExpiredError') {
-                    console.log('Token expired');
-                    return NextResponse.json({ error: "Token Expired" }, { status: 401 })
-                }
-                console.log('Invalid token');
-                return NextResponse.json({ error: "Invalid Token" }, { status: 401 })
-            }
-        });
+        // Use jose for token verification
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+        const { payload } = await jwtVerify(token, secret);
+
+        console.log("Token payload:", payload); // The decoded JWT payload
+
+        return NextResponse.next();
     } catch (err) {
-        console.log('Token Verification Failed');
-        return NextResponse.json({ error: "Token Verification Failed" }, { status: 500 })
+        console.error("JWT verification failed:", err);
+        return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
     }
+
     return NextResponse.next();
 }
 
