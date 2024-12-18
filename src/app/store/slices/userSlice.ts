@@ -116,8 +116,9 @@ export const verifyToken = createAsyncThunk(
                 const data = await response.json();
                 dispatch(setError(data.error || "Token Verification Failed"));
                 return false;
+            } else {
+                return true;
             }
-            return true;
         } catch (err) {
             dispatch(setError("An error occurred while logging in."));
             console.error(err);

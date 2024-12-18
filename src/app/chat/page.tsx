@@ -14,14 +14,23 @@ export default function Page() {
 
   useEffect(() => {
     if (!token) {
-      window.location.href = "/login"
+        window.location.href = "/login";
     } else {
-      const verified = dispatch(verifyToken({token}))
-      if (!verified) {
-        window.location.href = "/login"
-      }
-    } 
-  }, [token]);
+        dispatch(verifyToken({ token }))
+            .then((action) => {
+                // Access the payload returned by the thunk
+                console.log("Verified:", action.payload);
+                if (!action.payload) {
+                    window.location.href = "/login";
+                }
+            })
+            .catch((err) => {
+                console.error("Error verifying token:", err);
+                window.location.href = "/login";
+            });
+    }
+}, [token, dispatch]);
+
 
   return (
     <div className="flex justify-center h-screen items-center">
