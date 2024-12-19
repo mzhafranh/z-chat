@@ -91,7 +91,9 @@ const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    // Clear chat messages
+    setCurrentContact: (state, action) => {
+      state.currentContact = action.payload;
+    },
     clearChat: (state) => {
       state.messages = [];
     },
@@ -134,5 +136,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { clearChat } = chatSlice.actions;
+export const { setCurrentContact, clearChat } = chatSlice.actions;
 export default chatSlice.reducer;
