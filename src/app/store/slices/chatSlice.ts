@@ -17,7 +17,7 @@ interface sendMessageParams {
 }
 
 interface fetchMessagesParams {
-  token: string,
+  token: string | null,
   senderId: string,
   recipientId: string
 }
@@ -43,6 +43,30 @@ export const fetchMessages = createAsyncThunk(
   'chat/fetchMessages',
   async ({senderId, recipientId, token}: fetchMessagesParams) => {
     try {
+      const response = await fetch(`/api/chat/messages`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          senderId: senderId, // Replace with actual sender ID
+          recipientId: recipientId, // Replace with actual recipient ID
+        }),
+      });
+      if (!response.ok) throw new Error('Failed to fetch messages');
+      const data = await response.json();
+      return data; // The payload for fulfilled
+    } catch (error) {
+      console.log("Error fetching messages", error)
+      return
+    }
+  }
+);
+
+export const refreshMessages = createAsyncThunk(
+  'chat/refreshMessages',
+  async ({senderId, recipientId, token}: fetchMessagesParams) => {
+    try {
+      console.log(senderId)
+      console.log(recipientId)
       const response = await fetch(`/api/chat/messages`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -151,9 +175,21 @@ const chatSlice = createSlice({
       })
       .addCase(fetchMessages.fulfilled, (state, action) => {
         state.loading = false;
-        state.messageList = action.payload; // Set messages
+        state.messageList = [...state.messageList, ...action.payload]; // Set messages
       })
       .addCase(fetchMessages.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(refreshMessages.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(refreshMessages.fulfilled, (state, action) => {
+        state.loading = false;
+        state.messageList = action.payload; // Set messages
+      })
+      .addCase(refreshMessages.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
