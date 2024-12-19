@@ -8,8 +8,43 @@ export async function GET() {
         return NextResponse.json(users, { status: 200 });
     } catch (error) {
         return NextResponse.json(
-            { error: "Failed to fetch users" },
+            { error: "Failed to fetch messages" },
             { status: 500 }
         );
     }
 }
+
+export async function POST(req) {
+    try {
+      // Extract the Authorization header
+  
+      // Parse request body
+      const body = await req.json();
+      const { content, senderId, recipientId } = body;
+
+      console.log(content, senderId, recipientId)
+  
+      if (!content || !senderId || !recipientId) {
+        return NextResponse.json(
+          { error: "Content, senderId, and recipientId are required" },
+          { status: 400 }
+        );
+      }
+  
+      // Create the message in the database
+      const newMessage = await prisma.message.create({
+        data: {
+          content,
+          senderId,
+          recipientId,
+        },
+      });
+  
+      // Return the created message
+      return NextResponse.json(newMessage, { status: 201 });
+    } catch (error) {
+      console.error("Error creating message:", error);
+  
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+  }

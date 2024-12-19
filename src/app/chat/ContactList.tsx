@@ -11,6 +11,7 @@ export default function ContactList() {
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
 
     const { contactList, currentContact } = useSelector((state: RootState) => state.chat);
+    const { username } = useSelector((state: RootState) => state.user);
     
     useEffect(() => {
         dispatch(getContacts({token}))
@@ -22,6 +23,7 @@ export default function ContactList() {
         id = {contact.id}
         username = {contact.username}
         currentContact = {currentContact}
+        currentUser = {username}
         />
     )
 

@@ -2,14 +2,15 @@
 
 import { useEffect } from "react";
 import ChatContainer from "./ChatContainer";
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from "../store/store";
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from "../store/store";
 import { verifyToken } from "../store/slices/userSlice";
 
 
 export default function Page() {
   const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
   const dispatch = useDispatch<AppDispatch>();
+  const { username } = useSelector((state: RootState) => state.user);
 
 
   useEffect(() => {

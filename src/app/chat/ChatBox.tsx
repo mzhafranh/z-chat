@@ -1,18 +1,43 @@
+import { useState } from "react";
 import ChatList from "./ChatList";
 import ChatReceiver from "./ChatReceiver";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
+import { sendMessage } from "../store/slices/chatSlice";
 
 export default function ChatBox() {
+    const dispatch = useDispatch<AppDispatch>();
+    const [message, setMessage] = useState("");
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+    const { currentContact } = useSelector((state: RootState) => state.chat);
+    const { username } = useSelector((state: RootState) => state.user);
+
+    const handleSubmit = async (e) => {
+      e.preventDefault(); // Prevent the default form submission behavior
+  
+      if (!message.trim()) {
+        return; // Don't send an empty message
+      }
+      
+      const messageSent = await dispatch(sendMessage({token, message, sender:username, recipient:currentContact}))
+      if (messageSent) {
+        setMessage("")
+      }
+    };
+
     return (
         <div className="container w-10/12 flex flex-col">
             <ChatReceiver/>
             <div className="rounded-lg h-full shadow-centered shadow-slate-500 mt-5 p-5 flex flex-col">
                 <ChatList/>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="flex flex-row">
                         <input
                             type="text"
                             id="message"
                             name="message"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
                             className="block w-full mr-2 text-sm px-3 py-2 rounded-full border border-solid border-gray-300 shadow-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="Write a message..."
                             required

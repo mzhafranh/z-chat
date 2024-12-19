@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { Verify } from 'crypto';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import jwt from 'jsonwebtoken';
 
 interface autoLoginParams {
@@ -15,14 +14,14 @@ interface verifyTokenParams {
 }
 
 interface UserState {
-    username: string | null;
+    username: string;
     isAuthenticated: boolean;
     token: string | null;
     error: string | null
 }
 
 const initialState: UserState = {
-    username: null,
+    username: "",
     isAuthenticated: false,
     token: null,
     error: null
@@ -66,7 +65,6 @@ export const autoLogin = createAsyncThunk(
                 localStorage.setItem("authToken", accessToken);
                 dispatch(setError("")); // Clear any previous errors
                 dispatch(login(user.username))
-                window.location.href = '/chat'
             }
         } catch (err) {
             dispatch(setError("An error occurred while logging in."));
@@ -94,10 +92,10 @@ export const loginUser = createAsyncThunk(
             const { refreshToken, accessToken } = await response.json();
             localStorage.setItem("authToken", accessToken);
             localStorage.setItem("refreshToken", refreshToken)
-            console.log('sampai sebelum set error')
             dispatch(setError("")); // Clear any previous errors
             dispatch(login(username))
-            window.location.href = '/chat'
+            console.log('sampai sebelum ke /chat', username)
+            // window.location.href = '/chat'
         } catch (err) {
             dispatch(setError("An error occurred while logging in."));
             console.error(err);
@@ -133,12 +131,12 @@ const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        login: (state, action: PayloadAction<string>) => {
+        login: (state, action) => {
             state.username = action.payload;
             state.isAuthenticated = true;
         },
         logout: (state) => {
-            state.username = null;
+            state.username = "";
             state.isAuthenticated = false;
         },
         setError: (state, action) => { state.error = action.payload }

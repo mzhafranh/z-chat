@@ -1,20 +1,25 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../store/slices/userSlice';
 import { RootState } from '../store/store';
 import type { AppDispatch } from '../store/store';
+import { useRouter } from 'next/navigation';
+
 
 export default function LoginBox() {
     const [usernameInput, setUsernameInput] = useState('');
     const dispatch = useDispatch<AppDispatch>();
     const { username } = useSelector((state: RootState) => state.user);
+    const router = useRouter();
+
 
     const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (usernameInput.trim()) {
             dispatch(loginUser({username: usernameInput}));
+            router.push('/chat');
         }
     };
 
@@ -22,7 +27,6 @@ export default function LoginBox() {
         <div className="container w-96 m-3 p-3 rounded-lg shadow-centered shadow-slate-500 flex flex-col">
             <div className="">
                 <h1 className="text-emerald-500 font-bold text-center">LOGIN</h1>
-                <h1 className="text-sky-500 font-bold text-center">{username}</h1>
             </div>
             <hr className="mt-2"/>
             <div className="">

@@ -9,6 +9,13 @@ interface Contact {
   username: string
 }
 
+interface sendMessageParams {
+  token: string | null,
+  message: string,
+  sender: string,
+  recipient: string
+}
+
 interface Message {
   id: string,
   content: string,
@@ -18,9 +25,9 @@ interface Message {
 }
 
 interface ChatState {
-  currentContact: string | null,
+  currentContact: string,
   contactList: Contact[],
-  messages: Message[],
+  messageList: Message[],
   loading: boolean,
   error: string | null,
 }
@@ -43,18 +50,28 @@ export const fetchMessages = createAsyncThunk(
 // Example: Send a message to the backend
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
-  async ({ conversationId, message }, thunkAPI) => {
+  async ({ token, message, sender, recipient }: sendMessageParams, thunkAPI) => {
     try {
-      const response = await fetch(`/api/chat/${conversationId}`, {
+      const response = await fetch(`/api/chat/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message }),
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: message,
+          senderId: sender, // Replace with actual sender ID
+          recipientId: recipient, // Replace with actual recipient ID
+        }),
       });
-      if (!response.ok) throw new Error('Failed to send message');
-      const data = await response.json();
-      return data; // Message data
+      if (!response.ok) {
+        const error = await response.json()
+        console.log('Failed to send message', error);
+      } else {
+        const data = await response.json();
+        console.log("Message sent successfully");
+        return true; // Message data
+      }
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      console.log("Failed to send message", error);
+      return false
     }
   }
 );
@@ -79,9 +96,9 @@ export const getContacts = createAsyncThunk(
 
 // Initial state
 const initialState: ChatState = {
-  currentContact: '',
+  currentContact: 'Recipient',
   contactList: [],
-  messages: [], // Array to hold chat messages
+  messageList: [], // Array to hold chat messages
   loading: false, // For loading states
   error: null, // To store error messages
 };
@@ -95,7 +112,7 @@ const chatSlice = createSlice({
       state.currentContact = action.payload;
     },
     clearChat: (state) => {
-      state.messages = [];
+      state.messageList = [];
     },
   },
   extraReducers: (builder) => {
@@ -128,7 +145,7 @@ const chatSlice = createSlice({
       })
       // Handle sendMessage
       .addCase(sendMessage.fulfilled, (state, action) => {
-        state.messages.push(action.payload); // Append new message
+        state.messageList.push(action.payload); // Append new message
       })
       .addCase(sendMessage.rejected, (state, action) => {
         state.error = action.payload;
