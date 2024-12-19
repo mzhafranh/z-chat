@@ -59,12 +59,13 @@ export const autoLogin = createAsyncThunk(
                 if (!response.ok) {
                     const data = await response.json();
                     dispatch(setError(data.error || "Login failed"));
-                    return;
+                    return false;
                 }
                 const { accessToken, user } = await response.json();
                 localStorage.setItem("authToken", accessToken);
                 dispatch(setError("")); // Clear any previous errors
                 dispatch(login(user.username))
+                return true
             }
         } catch (err) {
             dispatch(setError("An error occurred while logging in."));

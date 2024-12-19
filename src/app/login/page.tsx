@@ -16,7 +16,15 @@ export default function Page() {
 
   useEffect(() => {
     dispatch(autoLogin({refreshToken}))
-    router.push('/chat');
+    .then((action) => {
+      if (action.payload){
+        router.push('/chat');
+      }
+    }).catch((err) => {
+      console.error("Error verifying token:", err);
+      window.location.href = "/login";
+  });
+    
   }, []);
 
   return (
