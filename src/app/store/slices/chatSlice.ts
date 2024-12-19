@@ -16,6 +16,12 @@ interface sendMessageParams {
   recipient: string
 }
 
+interface fetchMessagesParams {
+  token: string,
+  senderId: string,
+  recipientId: string
+}
+
 interface Message {
   id: string,
   content: string,
@@ -35,14 +41,22 @@ interface ChatState {
 // Example: Fetch chat messages from an API
 export const fetchMessages = createAsyncThunk(
   'chat/fetchMessages',
-  async (conversationId, thunkAPI) => {
+  async ({senderId, recipientId, token}: fetchMessagesParams) => {
     try {
-      const response = await fetch(`/api/chat/${conversationId}`);
+      const response = await fetch(`/api/chat/messages`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          senderId: senderId, // Replace with actual sender ID
+          recipientId: recipientId, // Replace with actual recipient ID
+        }),
+      });
       if (!response.ok) throw new Error('Failed to fetch messages');
       const data = await response.json();
       return data; // The payload for fulfilled
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      console.log("Error fetching messages", error)
+      return
     }
   }
 );
@@ -50,7 +64,7 @@ export const fetchMessages = createAsyncThunk(
 // Example: Send a message to the backend
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
-  async ({ token, message, sender, recipient }: sendMessageParams, thunkAPI) => {
+  async ({ token, message, sender, recipient }: sendMessageParams) => {
     try {
       const response = await fetch(`/api/chat/`, {
         method: 'POST',
@@ -67,11 +81,11 @@ export const sendMessage = createAsyncThunk(
       } else {
         const data = await response.json();
         console.log("Message sent successfully");
-        return true; // Message data
+        return data; // Message data
       }
     } catch (error) {
       console.log("Failed to send message", error);
-      return false
+      return
     }
   }
 );
@@ -137,7 +151,7 @@ const chatSlice = createSlice({
       })
       .addCase(fetchMessages.fulfilled, (state, action) => {
         state.loading = false;
-        state.messages = action.payload; // Set messages
+        state.messageList = action.payload; // Set messages
       })
       .addCase(fetchMessages.rejected, (state, action) => {
         state.loading = false;

@@ -19,10 +19,8 @@ export default function ChatBox() {
         return; // Don't send an empty message
       }
       
-      const messageSent = await dispatch(sendMessage({token, message, sender:username, recipient:currentContact}))
-      if (messageSent) {
-        setMessage("")
-      }
+      dispatch(sendMessage({token, message, sender:username, recipient:currentContact}))
+      setMessage("")
     };
 
     return (
