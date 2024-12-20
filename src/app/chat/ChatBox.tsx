@@ -4,6 +4,8 @@ import ChatReceiver from "./ChatReceiver";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { sendMessage } from "../store/slices/chatSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
 
 export default function ChatBox() {
     const dispatch = useDispatch<AppDispatch>();
@@ -41,9 +43,7 @@ export default function ChatBox() {
                             required
                         />
                         <button className="w-9 h-9 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-                            </svg>
+                            <FontAwesomeIcon icon={faPaperPlane} className="fa-lg"/>
                         </button>
                     </div>
                 </form>
