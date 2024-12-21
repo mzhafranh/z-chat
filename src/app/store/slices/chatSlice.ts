@@ -22,6 +22,11 @@ interface fetchMessagesParams {
   recipientId: string
 }
 
+interface deleteMessageParams {
+  token: string | null,
+  id: string
+}
+
 interface Message {
   id: string,
   content: string,
@@ -85,6 +90,27 @@ export const refreshMessages = createAsyncThunk(
   }
 );
 
+export const deleteMessage = createAsyncThunk(
+  'chat/deleteMessage',
+  async ({ token, id }: deleteMessageParams, { dispatch }) => {
+    try {
+      const response = await fetch("/api/chat/messages", {
+        method: "DELETE",
+        headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: id
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to delete message');
+      const data = await response.json();
+      return data; // Message data
+    } catch (err) {
+      console.log(err);
+    }
+  }
+)
+
 // Example: Send a message to the backend
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
@@ -131,6 +157,8 @@ export const getContacts = createAsyncThunk(
     }
   }
 )
+
+
 
 // Initial state
 const initialState: ChatState = {
@@ -198,6 +226,12 @@ const chatSlice = createSlice({
         state.messageList.push(action.payload); // Append new message
       })
       .addCase(sendMessage.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(deleteMessage.fulfilled, (state, action) => {
+        state.messageList.pop(); // Append new message
+      })
+      .addCase(deleteMessage.rejected, (state, action) => {
         state.error = action.payload;
       });
   },

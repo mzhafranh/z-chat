@@ -22,7 +22,6 @@ export default function ChatList() {
         content = {message.content}
         senderId = {message.senderId}
         recipientId = {message.recipientId}
-        username = {username}
         />
     )
 
