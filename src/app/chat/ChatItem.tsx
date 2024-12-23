@@ -10,10 +10,9 @@ interface ChatItemProps {
     content: string;
     senderId: string;
     recipientId: string;
-    username: string;
 }
 
-const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId }) => {
+const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId }) => {
     const [isHovered, setIsHovered] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;

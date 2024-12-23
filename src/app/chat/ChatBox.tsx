@@ -15,22 +15,23 @@ export default function ChatBox() {
     const { username } = useSelector((state: RootState) => state.user);
 
     const handleSubmit = async (e) => {
-      e.preventDefault(); // Prevent the default form submission behavior
-  
-      if (!message.trim()) {
-        return; // Don't send an empty message
-      }
-      
-      dispatch(sendMessage({token, message, sender:username, recipient:currentContact}))
-      setMessage("")
+        e.preventDefault(); // Prevent the default form submission behavior
+
+        if (!message.trim()) {
+            return; // Don't send an empty message
+        }
+
+        dispatch(sendMessage({ token, message, sender: username, recipient: currentContact }))
+        setMessage("")
     };
 
     return (
-        <div className="container w-10/12 flex flex-col">
-            <ChatReceiver/>
-            <div className="rounded-lg h-full shadow-centered shadow-slate-500 mt-5 p-5 flex flex-col">
-                <ChatList/>
-                <form onSubmit={handleSubmit}>
+        <div className="container h-full w-10/12 flex flex-col">
+            <ChatReceiver />
+            <div className="rounded-lg shadow-centered shadow-slate-500 mt-5 p-5 flex flex-col"
+            style={{height:"785px"}}>
+                    <ChatList />
+                <form onSubmit={handleSubmit} className="mt-4">
                     <div className="flex flex-row">
                         <input
                             type="text"
@@ -42,8 +43,8 @@ export default function ChatBox() {
                             placeholder="Write a message..."
                             required
                         />
-                        <button className="w-9 h-9 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200">
-                            <FontAwesomeIcon icon={faPaperPlane} className="fa-lg"/>
+                        <button className="w-9 h-9 bg-blue-500 text-white rounded-full flex items-center justify-center align-bottom hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200">
+                            <FontAwesomeIcon icon={faPaperPlane} className="fa-lg" />
                         </button>
                     </div>
                 </form>

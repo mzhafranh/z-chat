@@ -196,7 +196,6 @@ const chatSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // Handle fetchMessages
       .addCase(fetchMessages.pending, (state) => {
         state.loading = true;
         state.error = null;

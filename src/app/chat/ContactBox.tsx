@@ -8,7 +8,7 @@ export default function ContactBox() {
     };
     
     return (
-        <div className="container h- w-2/12 rounded-lg shadow-centered shadow-slate-500 mr-5 flex flex-col">
+        <div className="container w-2/12 rounded-lg shadow-centered shadow-slate-500 mr-5 flex flex-col">
             <h1 className="font-bold text-gray-500 text-center text-2xl p-4">Contacts</h1>
             <hr className="mb-4" />
             <ContactList/>
