@@ -22,7 +22,7 @@ export async function POST(req: Request) {
         );
     }
 
-    console.log(username)
+    console.log("username:",username)
 
     try {
         const user = await prisma.user.create({

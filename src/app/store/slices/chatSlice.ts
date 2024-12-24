@@ -46,7 +46,7 @@ interface ChatState {
 // Example: Fetch chat messages from an API
 export const fetchMessages = createAsyncThunk(
   'chat/fetchMessages',
-  async ({senderId, recipientId, token}: fetchMessagesParams) => {
+  async ({ senderId, recipientId, token }: fetchMessagesParams) => {
     try {
       const response = await fetch(`/api/chat/messages`, {
         method: 'POST',
@@ -68,10 +68,10 @@ export const fetchMessages = createAsyncThunk(
 
 export const refreshMessages = createAsyncThunk(
   'chat/refreshMessages',
-  async ({senderId, recipientId, token}: fetchMessagesParams) => {
+  async ({ senderId, recipientId, token }: fetchMessagesParams) => {
     try {
-      console.log(senderId)
-      console.log(recipientId)
+      console.log("senderId:", senderId)
+      console.log("recipientId:", recipientId)
       const response = await fetch(`/api/chat/messages`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -202,7 +202,7 @@ const chatSlice = createSlice({
       })
       .addCase(fetchMessages.fulfilled, (state, action) => {
         state.loading = false;
-        state.messageList = [...state.messageList, ...action.payload]; // Set messages
+        state.messageList = [...state.messageList, ...action.payload.messages]; // Set messages
       })
       .addCase(fetchMessages.rejected, (state, action) => {
         state.loading = false;
@@ -214,7 +214,7 @@ const chatSlice = createSlice({
       })
       .addCase(refreshMessages.fulfilled, (state, action) => {
         state.loading = false;
-        state.messageList = action.payload; // Set messages
+        state.messageList = action.payload.messages; // Set messages
       })
       .addCase(refreshMessages.rejected, (state, action) => {
         state.loading = false;
@@ -222,13 +222,15 @@ const chatSlice = createSlice({
       })
       // Handle sendMessage
       .addCase(sendMessage.fulfilled, (state, action) => {
-        state.messageList.push(action.payload); // Append new message
+        state.messageList.unshift(action.payload); // Append new message
       })
       .addCase(sendMessage.rejected, (state, action) => {
         state.error = action.payload;
       })
       .addCase(deleteMessage.fulfilled, (state, action) => {
-        state.messageList.pop(); // Append new message
+        state.messageList = state.messageList.filter(
+          (message) => message.id !== action.payload.id
+        );
       })
       .addCase(deleteMessage.rejected, (state, action) => {
         state.error = action.payload;

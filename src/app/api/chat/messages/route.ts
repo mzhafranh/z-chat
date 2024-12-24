@@ -4,7 +4,9 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
     try {
         const body = await req.json();
-        const { senderId, recipientId } = body;
+        const { senderId, recipientId, page = 1, limit = 20 } = body;
+
+        const skip = (page - 1) * limit;
 
         const messages = await prisma.message.findMany({
             where: {
@@ -20,10 +22,40 @@ export async function POST(req) {
                 ],
             },
             orderBy: {
-                timestamp: 'asc', // You can order messages by timestamp
+                timestamp: 'desc',
+            },
+            skip,
+            take: limit,
+        });
+
+        const totalMessages = await prisma.message.count({
+            where: {
+                OR: [
+                    {
+                        senderId: senderId,
+                        recipientId: recipientId,
+                    },
+                    {
+                        senderId: recipientId,
+                        recipientId: senderId,
+                    },
+                ],
             },
         });
-        return NextResponse.json(messages, { status: 200 });
+
+        
+        return NextResponse.json(
+            {
+                messages,
+                pagination: {
+                    currentPage: page,
+                    totalPages: Math.ceil(totalMessages / limit),
+                    totalMessages,
+                },
+            },
+            { status: 200 }
+        );
+
     } catch (error) {
         console.log("Error fetching messages:", error);
         return NextResponse.json(
@@ -47,7 +79,7 @@ export async function DELETE(req) {
             where: { id },
         });
 
-        return NextResponse.json({ message: 'Message deleted successfully', deletedMessage }, {status: 200});
+        return NextResponse.json({ message: 'Message deleted successfully', deletedMessage, id }, {status: 200});
     } catch (error) {
         console.error('Error deleting message:', error);
         return NextResponse.json(
