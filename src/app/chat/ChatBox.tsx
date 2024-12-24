@@ -29,8 +29,8 @@ export default function ChatBox() {
         <div className="container h-full w-10/12 flex flex-col">
             <ChatReceiver />
             <div className="rounded-lg shadow-centered shadow-slate-500 mt-5 p-5 flex flex-col"
-            style={{height:"785px"}}>
-                    <ChatList />
+            style={{height:"90%"}}>
+                <ChatList />
                 <form onSubmit={handleSubmit} className="mt-4">
                     <div className="flex flex-row">
                         <input

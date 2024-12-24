@@ -28,7 +28,7 @@ export default function ContactList() {
     )
 
     return (
-        <div className="h-full">
+        <div className="h-full overflow-y-auto">
             {nodeList}  
         </div>
     )
