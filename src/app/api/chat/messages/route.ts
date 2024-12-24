@@ -4,8 +4,8 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
     try {
         const body = await req.json();
-        const { senderId, recipientId, page = 1, limit = 20 } = body;
-
+        const { senderId, recipientId, page = 1 } = body;
+        const limit = 20;
         const skip = (page - 1) * limit;
 
         const messages = await prisma.message.findMany({

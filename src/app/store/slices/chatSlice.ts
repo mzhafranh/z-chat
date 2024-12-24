@@ -19,7 +19,14 @@ interface sendMessageParams {
 interface fetchMessagesParams {
   token: string | null,
   senderId: string,
-  recipientId: string
+  recipientId: string,
+  page: number
+}
+
+interface refreshMessagesParams {
+  token: string | null,
+  senderId: string,
+  recipientId: string,
 }
 
 interface deleteMessageParams {
@@ -39,6 +46,8 @@ interface ChatState {
   currentContact: string,
   contactList: Contact[],
   messageList: Message[],
+  page: number,
+  totalPage: number,
   loading: boolean,
   error: string | null,
 }
@@ -46,7 +55,7 @@ interface ChatState {
 // Example: Fetch chat messages from an API
 export const fetchMessages = createAsyncThunk(
   'chat/fetchMessages',
-  async ({ senderId, recipientId, token }: fetchMessagesParams) => {
+  async ({ senderId, recipientId, token, page }: fetchMessagesParams, {dispatch}) => {
     try {
       const response = await fetch(`/api/chat/messages`, {
         method: 'POST',
@@ -54,10 +63,13 @@ export const fetchMessages = createAsyncThunk(
         body: JSON.stringify({
           senderId: senderId, // Replace with actual sender ID
           recipientId: recipientId, // Replace with actual recipient ID
+          page: page
         }),
       });
       if (!response.ok) throw new Error('Failed to fetch messages');
       const data = await response.json();
+      dispatch(setPage(data.pagination.currentPage))
+      dispatch(setTotalPage(data.pagination.totalPages))
       return data; // The payload for fulfilled
     } catch (error) {
       console.log("Error fetching messages", error)
@@ -68,7 +80,7 @@ export const fetchMessages = createAsyncThunk(
 
 export const refreshMessages = createAsyncThunk(
   'chat/refreshMessages',
-  async ({ senderId, recipientId, token }: fetchMessagesParams) => {
+  async ({ senderId, recipientId, token}: refreshMessagesParams, {dispatch}) => {
     try {
       console.log("senderId:", senderId)
       console.log("recipientId:", recipientId)
@@ -78,10 +90,13 @@ export const refreshMessages = createAsyncThunk(
         body: JSON.stringify({
           senderId: senderId, // Replace with actual sender ID
           recipientId: recipientId, // Replace with actual recipient ID
+          page: 1
         }),
       });
       if (!response.ok) throw new Error('Failed to fetch messages');
       const data = await response.json();
+      dispatch(setPage(1))
+      dispatch(setTotalPage(data.pagination.totalPages))
       return data; // The payload for fulfilled
     } catch (error) {
       console.log("Error fetching messages", error)
@@ -165,6 +180,8 @@ const initialState: ChatState = {
   currentContact: 'Recipient',
   contactList: [],
   messageList: [], // Array to hold chat messages
+  page: 1,
+  totalPage: 0,
   loading: false, // For loading states
   error: null, // To store error messages
 };
@@ -176,6 +193,12 @@ const chatSlice = createSlice({
   reducers: {
     setCurrentContact: (state, action) => {
       state.currentContact = action.payload;
+    },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
+    setTotalPage: (state, action) => {
+      state.totalPage = action.payload;
     },
     clearChat: (state) => {
       state.messageList = [];
@@ -238,5 +261,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentContact, clearChat } = chatSlice.actions;
+export const { setCurrentContact, clearChat, setPage, setTotalPage } = chatSlice.actions;
 export default chatSlice.reducer;
