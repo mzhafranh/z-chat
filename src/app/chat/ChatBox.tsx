@@ -28,27 +28,41 @@ export default function ChatBox() {
     return (
         <div className="container h-full w-10/12 flex flex-col">
             <ChatReceiver />
-            <div className="rounded-lg shadow-centered shadow-slate-500 mt-5 p-5 flex flex-col"
-            style={{height:"90%"}}>
+            <div
+                className="rounded-lg shadow-centered shadow-slate-500 mt-5 p-5 flex flex-col"
+                style={{ height: "90%" }}
+            >
                 <ChatList />
-                <form onSubmit={handleSubmit} className="mt-4">
+                <form
+                    onSubmit={handleSubmit}
+                    className="mt-4"
+                >
                     <div className="flex flex-row">
-                        <input
-                            type="text"
+                        <textarea
                             id="message"
                             name="message"
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            className="block w-full mr-2 text-sm px-3 py-2 rounded-full border border-solid border-gray-300 shadow-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault(); // Prevents adding a new line
+                                    handleSubmit(e); // Submit the form
+                                }
+                            }}
+                            className="block w-full h-16 mr-2 text-sm px-3 py-2 rounded-lg border border-solid border-gray-300 shadow-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none"
                             placeholder="Write a message..."
                             required
                         />
-                        <button className="w-9 h-9 bg-blue-500 text-white rounded-full flex items-center justify-center align-bottom hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200">
+                        <button
+                            className="w-9 h-9 bg-blue-500 text-white rounded-full flex items-center justify-center align-bottom hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200"
+                        >
                             <FontAwesomeIcon icon={faPaperPlane} className="fa-lg" />
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-    )
+    );
+    
+    
 }
