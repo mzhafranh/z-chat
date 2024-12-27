@@ -82,8 +82,8 @@ export const refreshMessages = createAsyncThunk(
   'chat/refreshMessages',
   async ({ senderId, recipientId, token}: refreshMessagesParams, {dispatch}) => {
     try {
-      console.log("senderId:", senderId)
-      console.log("recipientId:", recipientId)
+      console.log("refreshMessage - senderId:", senderId)
+      console.log("refreshMessage - recipientId:", recipientId)
       const response = await fetch(`/api/chat/messages`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -203,6 +203,9 @@ const chatSlice = createSlice({
     clearChat: (state) => {
       state.messageList = [];
     },
+    receiveMessage: (state, action) => {
+      state.messageList.unshift(action.payload)
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -261,5 +264,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentContact, clearChat, setPage, setTotalPage } = chatSlice.actions;
+export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage } = chatSlice.actions;
 export default chatSlice.reducer;

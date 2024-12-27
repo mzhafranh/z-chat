@@ -2,20 +2,24 @@ import { useDispatch, useSelector } from "react-redux";
 import ChatItem from "./ChatItem";
 import { AppDispatch, RootState } from "../store/store";
 import { useEffect, useRef, useState } from "react";
-import { fetchMessages, refreshMessages } from "../store/slices/chatSlice";
+import { clearChat, fetchMessages, receiveMessage, refreshMessages } from "../store/slices/chatSlice";
+import { getSocket } from "../components/SocketProvider";
 
 export default function ChatList() {
     const dispatch = useDispatch<AppDispatch>();
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     const chatContainerRef = useRef<HTMLDivElement>(null);
+    const currentContactRef = useRef<string | null>(null);
     const [isFetching, setIsFetching] = useState(false);
+    const socket = getSocket();
 
 
     const { currentContact, messageList, page, totalPage } = useSelector((state: RootState) => state.chat);
     const { username } = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
-        dispatch(refreshMessages({ senderId: username, recipientId: currentContact, token, page: 1 }))
+        currentContactRef.current = currentContact;
+        dispatch(refreshMessages({ senderId: username, recipientId: currentContact, token }))
     }, [currentContact]);
 
     useEffect(() => {
@@ -23,6 +27,14 @@ export default function ChatList() {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
     }, [messageList]);
+
+    useEffect(() => {
+        socket.on("message", (message) => {
+            if (message.senderId === currentContactRef.current && message.recipientId === username){
+                dispatch(receiveMessage(message))
+            }
+        });
+    }, [socket])
 
     const handleScroll = () => {
         if (chatContainerRef.current && !isFetching && page < totalPage) {

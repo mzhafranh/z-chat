@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChatList from "./ChatList";
 import ChatReceiver from "./ChatReceiver";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
-import { sendMessage } from "../store/slices/chatSlice";
+import { refreshMessages, sendMessage } from "../store/slices/chatSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
+import { getSocket } from "../components/SocketProvider";
+
 
 export default function ChatBox() {
     const dispatch = useDispatch<AppDispatch>();
@@ -13,6 +15,7 @@ export default function ChatBox() {
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     const { currentContact } = useSelector((state: RootState) => state.chat);
     const { username } = useSelector((state: RootState) => state.user);
+    const socket = getSocket()
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevent the default form submission behavior
@@ -21,8 +24,11 @@ export default function ChatBox() {
             return; // Don't send an empty message
         }
 
-        dispatch(sendMessage({ token, message, sender: username, recipient: currentContact }))
-        setMessage("")
+        if (socket) {
+            const messageData = await dispatch(sendMessage({ token, message, sender: username, recipient: currentContact }))
+            socket.emit("message", messageData.payload)
+            setMessage("")
+        }
     };
 
     return (
