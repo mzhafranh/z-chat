@@ -31,9 +31,13 @@ export default function ChatList() {
     useEffect(() => {
         socket.on("message", (message) => {
             if (message.senderId === currentContactRef.current && message.recipientId === username){
+                console.log("ReceiveMessage executed")
                 dispatch(receiveMessage(message))
             }
-        });
+        })
+        return () => {
+            socket.off("message");
+        };
     }, [socket])
 
     const handleScroll = () => {
