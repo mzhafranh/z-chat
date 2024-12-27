@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ChatItem from "./ChatItem";
 import { AppDispatch, RootState } from "../store/store";
 import { useEffect, useRef, useState } from "react";
-import { clearChat, fetchMessages, receiveMessage, refreshMessages } from "../store/slices/chatSlice";
+import { clearChat, fetchMessages, receiveMessage, refreshMessages, setChatAccessTime } from "../store/slices/chatSlice";
 import { getSocket } from "../components/SocketProvider";
 
 export default function ChatList() {
@@ -14,12 +14,13 @@ export default function ChatList() {
     const socket = getSocket();
 
 
-    const { currentContact, messageList, page, totalPage } = useSelector((state: RootState) => state.chat);
+    const { currentContact, messageList, page, totalPage, chatAccessTime } = useSelector((state: RootState) => state.chat);
     const { username } = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
         currentContactRef.current = currentContact;
-        dispatch(refreshMessages({ senderId: username, recipientId: currentContact, token }))
+        dispatch(setChatAccessTime());
+        dispatch(refreshMessages({ senderId: username, recipientId: currentContact, token }));
     }, [currentContact]);
 
     useEffect(() => {
@@ -45,7 +46,7 @@ export default function ChatList() {
             const { scrollTop } = chatContainerRef.current;
             if (scrollTop < 50) {
                 setIsFetching(true);
-                dispatch(fetchMessages({ senderId: username, recipientId: currentContact, token, page: page + 1 }))
+                dispatch(fetchMessages({ senderId: username, recipientId: currentContact, token, page: page + 1, chatAccessTime}))
                     .finally(() => setIsFetching(false));
             }
         }

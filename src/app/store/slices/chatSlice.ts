@@ -20,7 +20,8 @@ interface fetchMessagesParams {
   token: string | null,
   senderId: string,
   recipientId: string,
-  page: number
+  page: number,
+  chatAccessTime: string
 }
 
 interface refreshMessagesParams {
@@ -50,20 +51,25 @@ interface ChatState {
   totalPage: number,
   loading: boolean,
   error: string | null,
+  chatAccessTime: string
 }
 
 // Example: Fetch chat messages from an API
 export const fetchMessages = createAsyncThunk(
   'chat/fetchMessages',
-  async ({ senderId, recipientId, token, page }: fetchMessagesParams, {dispatch}) => {
+  async ({ senderId, recipientId, token, page, chatAccessTime }: fetchMessagesParams, {dispatch}) => {
     try {
+      console.log("fetchMessage - senderId:", senderId)
+      console.log("fetchMessage - recipientId:", recipientId)
+      console.log("fetchMessage - page:", page)
       const response = await fetch(`/api/chat/messages`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           senderId: senderId, // Replace with actual sender ID
           recipientId: recipientId, // Replace with actual recipient ID
-          page: page
+          page: page,
+          chatAccessTime: chatAccessTime
         }),
       });
       if (!response.ok) throw new Error('Failed to fetch messages');
@@ -184,6 +190,7 @@ const initialState: ChatState = {
   totalPage: 0,
   loading: false, // For loading states
   error: null, // To store error messages
+  chatAccessTime: new Date().toISOString()
 };
 
 // The chat slice
@@ -205,7 +212,10 @@ const chatSlice = createSlice({
     },
     receiveMessage: (state, action) => {
       state.messageList.unshift(action.payload)
-    }
+    },
+    setChatAccessTime(state) {
+      state.chatAccessTime = new Date().toISOString();
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -264,5 +274,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage } = chatSlice.actions;
+export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage, setChatAccessTime } = chatSlice.actions;
 export default chatSlice.reducer;

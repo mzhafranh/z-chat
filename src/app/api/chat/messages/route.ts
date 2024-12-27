@@ -4,20 +4,29 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
     try {
         const body = await req.json();
-        const { senderId, recipientId, page = 1 } = body;
+        const { senderId, recipientId, page = 1, chatAccessTime = new Date() } = body;
         const limit = 20;
         const skip = (page - 1) * limit;
 
         const messages = await prisma.message.findMany({
             where: {
-                OR: [
+                AND: [
                     {
-                        senderId: senderId,
-                        recipientId: recipientId,
+                        timestamp: {
+                            lt: chatAccessTime,
+                        },
                     },
                     {
-                        senderId: recipientId,
-                        recipientId: senderId,
+                        OR: [
+                            {
+                                senderId: senderId,
+                                recipientId: recipientId,
+                            },
+                            {
+                                senderId: recipientId,
+                                recipientId: senderId,
+                            },
+                        ],
                     },
                 ],
             },
@@ -30,14 +39,23 @@ export async function POST(req) {
 
         const totalMessages = await prisma.message.count({
             where: {
-                OR: [
+                AND: [
                     {
-                        senderId: senderId,
-                        recipientId: recipientId,
+                        timestamp: {
+                            lt: chatAccessTime,
+                        },
                     },
                     {
-                        senderId: recipientId,
-                        recipientId: senderId,
+                        OR: [
+                            {
+                                senderId: senderId,
+                                recipientId: recipientId,
+                            },
+                            {
+                                senderId: recipientId,
+                                recipientId: senderId,
+                            },
+                        ],
                     },
                 ],
             },
