@@ -24,20 +24,25 @@ export default function ChatList() {
     }, [currentContact]);
 
     useEffect(() => {
+        console.log(username)
+    }, []);
+
+    useEffect(() => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
     }, [messageList]);
 
     useEffect(() => {
-        socket.on("message", (message) => {
+        socket.on(`${username}`, (message) => {
+            console.log(`Received Message on ${username}`)
             if (message.senderId === currentContactRef.current && message.recipientId === username){
                 console.log("ReceiveMessage executed")
                 dispatch(receiveMessage(message))
             }
         })
         return () => {
-            socket.off("message");
+            socket.off(`${username}`);
         };
     }, [socket])
 

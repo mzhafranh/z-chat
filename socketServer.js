@@ -17,10 +17,15 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
-    socket.on("message", (data) => {
+    // socket.on("message", (data) => {
+    //     console.log("Message received:", data);
+    //     io.emit("message", data); // Broadcast the message to all clients
+    // });
+
+    socket.onAny((eventName, data) => {
         console.log("Message received:", data);
-        io.emit("message", data); // Broadcast the message to all clients
-    });
+        io.emit(eventName, data);
+    })
 
     socket.on("disconnect", () => {
         console.log("A user disconnected:", socket.id);
