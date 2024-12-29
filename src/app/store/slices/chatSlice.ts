@@ -137,15 +137,17 @@ export const deleteMessage = createAsyncThunk(
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
   async ({ token, message, sender, recipient }: sendMessageParams, { dispatch, rejectWithValue }) => {
+    const tempMessageId = new Date().toISOString()
+    console.log("trying to addTempMessage", tempMessageId)
+    dispatch(addTempMessage({
+      id: tempMessageId,
+      content: message,
+      senderId: sender,
+      recipientId: recipient,
+      timestamp: new Date().toISOString(),
+    }))
+    
     try {
-      let tempMessageId = new Date().toISOString()
-      dispatch(addTempMessage({
-        id: tempMessageId,
-        content: message,
-        senderId: sender,
-        recipientId: recipient,
-        timestamp: new Date().toISOString(),
-      }))
 
       const response = await fetch(`/api/chat/`, {
         method: 'POST',

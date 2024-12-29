@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
-import { sendMessage } from "../store/slices/chatSlice";
+import { removeTempMessage, sendMessage } from "../store/slices/chatSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import ReactMarkdown from "react-markdown";
@@ -17,7 +17,7 @@ interface ChatItemProps {
     recipientId: string;
 }
 
-const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId }) => {
+const ChatTemporaryItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId }) => {
     const dispatch = useDispatch<AppDispatch>();
     const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
     const socket = getSocket();
@@ -29,6 +29,7 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId 
         if (messageData.meta.requestStatus === "fulfilled") {
             socket.emit(`${recipientId}`, messageData.payload)
             console.log("socket emit from resend on",recipientId)
+            dispatch(removeTempMessage(id))
         }
     };
 
@@ -88,4 +89,4 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId 
     );
 };
 
-export default ChatItem;
+export default ChatTemporaryItem;

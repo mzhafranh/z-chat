@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from "../store/store";
 import { useEffect, useRef, useState } from "react";
 import { clearChat, fetchMessages, receiveMessage, refreshMessages, setChatAccessTime } from "../store/slices/chatSlice";
 import { getSocket } from "../components/SocketProvider";
+import ChatTemporaryItem from "./ChatTemporaryItem";
 
 export default function ChatList() {
     const dispatch = useDispatch<AppDispatch>();
@@ -78,7 +79,7 @@ export default function ChatList() {
 
 
     const nodeListTemp = tempMessageList.map(
-        (message, index) => <ChatItem
+        (message, index) => <ChatTemporaryItem
             key={message.id}
             id={message.id}
             content={message.content}
