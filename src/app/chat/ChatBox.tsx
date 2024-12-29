@@ -26,8 +26,10 @@ export default function ChatBox() {
 
         if (socket) {
             const messageData = await dispatch(sendMessage({ token, message, sender: username, recipient: currentContact }))
+            if (messageData.meta.requestStatus === "fulfilled"){
             socket.emit(`${currentContact}`, messageData.payload)
             console.log("socket emit on",currentContact)
+            }
             setMessage("")
         }
     };

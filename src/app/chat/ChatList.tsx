@@ -13,8 +13,7 @@ export default function ChatList() {
     const [isFetching, setIsFetching] = useState(false);
     const socket = getSocket();
 
-
-    const { currentContact, messageList, page, totalPage, chatAccessTime } = useSelector((state: RootState) => state.chat);
+    const { currentContact, messageList, page, totalPage, chatAccessTime, tempMessageList, loading } = useSelector((state: RootState) => state.chat);
     const { username } = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
@@ -23,15 +22,11 @@ export default function ChatList() {
         dispatch(refreshMessages({ senderId: username, recipientId: currentContact, token }));
     }, [currentContact]);
 
-    useEffect(() => {
-        console.log(username)
-    }, []);
-
-    useEffect(() => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-    }, [messageList]);
+    // useEffect(() => {
+    //     if (chatContainerRef.current) {
+    //         chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    //     }
+    // }, [messageList]);
 
     useEffect(() => {
         socket.on(`${username}`, (message) => {
@@ -48,14 +43,24 @@ export default function ChatList() {
 
     const handleScroll = () => {
         if (chatContainerRef.current && !isFetching && page < totalPage) {
-            const { scrollTop } = chatContainerRef.current;
-            if (scrollTop < 50) {
+            const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+            const isNearTop = ((-1) * scrollTop) + clientHeight > scrollHeight - 100;
+            // console.log((((-1) * scrollTop) + clientHeight), (scrollHeight - 100))
+    
+            if (isNearTop) {
                 setIsFetching(true);
-                dispatch(fetchMessages({ senderId: username, recipientId: currentContact, token, page: page + 1, chatAccessTime}))
+                dispatch(fetchMessages({ 
+                    senderId: username, 
+                    recipientId: currentContact, 
+                    token, 
+                    page: page + 1, 
+                    chatAccessTime 
+                }))
                     .finally(() => setIsFetching(false));
             }
         }
     };
+    
 
     useEffect(() => {
         const chatContainer = chatContainerRef.current;
@@ -71,6 +76,17 @@ export default function ChatList() {
         };
     }, [isFetching, page, totalPage, chatContainerRef]);
 
+
+    const nodeListTemp = tempMessageList.map(
+        (message, index) => <ChatItem
+            key={message.id}
+            id={message.id}
+            content={message.content}
+            senderId={message.senderId}
+            recipientId={message.recipientId}
+        />
+    )
+
     const nodeList = messageList.map(
         (message, index) => <ChatItem
             key={message.id}
@@ -85,6 +101,7 @@ export default function ChatList() {
         <div
             ref={chatContainerRef}
             className="overflow-y-auto h-full flex flex-col-reverse px-4 pb-4">
+            {nodeListTemp}
             {nodeList}
         </div>
     )
