@@ -33,5 +33,5 @@ export async function middleware(req) {
 
 // Specify which routes the middleware should run on
 export const config = {
-    matcher: ['/api/:path'], // Run the middleware on these routes
+    matcher: ['/api/:path*'], // Run the middleware on these routes
 };
