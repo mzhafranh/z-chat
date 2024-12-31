@@ -32,7 +32,7 @@ export default function ChatList() {
     useEffect(() => {
         socket.on(`${username}`, (message) => {
             console.log(`Received Message on ${username}`)
-            if (message.senderId === currentContactRef.current && message.recipientId === username){
+            if (message.senderId === currentContactRef.current && message.recipientId === username) {
                 console.log("ReceiveMessage executed")
                 dispatch(receiveMessage(message))
             }
@@ -47,21 +47,21 @@ export default function ChatList() {
             const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
             const isNearTop = ((-1) * scrollTop) + clientHeight > scrollHeight - 100;
             // console.log((((-1) * scrollTop) + clientHeight), (scrollHeight - 100))
-    
+
             if (isNearTop) {
                 setIsFetching(true);
-                dispatch(fetchMessages({ 
-                    senderId: username, 
-                    recipientId: currentContact, 
-                    token, 
-                    page: page + 1, 
-                    chatAccessTime 
+                dispatch(fetchMessages({
+                    senderId: username,
+                    recipientId: currentContact,
+                    token,
+                    page: page + 1,
+                    chatAccessTime
                 }))
                     .finally(() => setIsFetching(false));
             }
         }
     };
-    
+
 
     useEffect(() => {
         const chatContainer = chatContainerRef.current;
