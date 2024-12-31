@@ -4,7 +4,7 @@ let socket: Socket | null = null;
 
 export const getSocket = () => {
     if (!socket) {
-        socket = io("http://localhost:3001");
+        socket = io("http://192.168.1.34:3001");
     }
     return socket;
 };

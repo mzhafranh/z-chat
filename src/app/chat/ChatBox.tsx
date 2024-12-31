@@ -64,7 +64,7 @@ export default function ChatBox() {
                                             handleSubmit(e); // Submit the form
                                         }
                                     }}
-                                    className="block w-full h-16 mr-2 text-sm px-3 py-2 rounded-lg border border-solid border-gray-300 shadow-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                                    className="block w-full mr-2 text-sm px-3 py-2 rounded-lg border border-solid border-gray-300 shadow-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none"
                                     placeholder="Write a message..."
                                     required
                                 />

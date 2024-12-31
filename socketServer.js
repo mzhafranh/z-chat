@@ -9,7 +9,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000", // Allow your Next.js app to connect
+        origin: true, // Allow your Next.js app to connect
         methods: ["GET", "POST"],
     },
 });
