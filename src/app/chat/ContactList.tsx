@@ -28,7 +28,7 @@ export default function ContactList() {
     )
 
     return (
-        <div className="h-full overflow-y-auto">
+        <div className="h-full overflow-y-auto scrollbar-custom pr-1 mr-1">
             {nodeList}  
         </div>
     )

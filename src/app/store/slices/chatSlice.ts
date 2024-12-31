@@ -16,6 +16,14 @@ interface sendMessageParams {
   recipient: string
 }
 
+interface resendMessageParams {
+  token: string | null,
+  tempMessageId: string,
+  message: string,
+  sender: string,
+  recipient: string
+}
+
 interface fetchMessagesParams {
   token: string | null,
   senderId: string,
@@ -133,12 +141,13 @@ export const deleteMessage = createAsyncThunk(
   }
 )
 
-// Example: Send a message to the backend
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
   async ({ token, message, sender, recipient }: sendMessageParams, { dispatch, rejectWithValue }) => {
     const tempMessageId = new Date().toISOString()
     console.log("trying to addTempMessage", tempMessageId)
+
+
     dispatch(addTempMessage({
       id: tempMessageId,
       content: message,
@@ -149,6 +158,38 @@ export const sendMessage = createAsyncThunk(
     
     try {
 
+      const response = await fetch(`/api/chat/`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: message,
+          senderId: sender, // Replace with actual sender ID
+          recipientId: recipient, // Replace with actual recipient ID
+        }),
+      });
+      if (!response.ok) {
+        const error = await response.json()
+        console.log('Failed to send message', error);
+        return rejectWithValue(error || 'An unexpected error occurred');
+      } else {
+        const data = await response.json();
+        console.log("Message sent successfully");
+        dispatch(removeTempMessage(tempMessageId))
+        return data; // Message data
+      }
+    } catch (error) {
+      console.log("Failed to send message", error);
+      return rejectWithValue(error || 'An unexpected error occurred');
+    }
+  }
+);
+
+export const resendMessage = createAsyncThunk(
+  'chat/resendMessage',
+  async ({ token, tempMessageId, message, sender, recipient }: resendMessageParams, { dispatch, rejectWithValue }) => {
+    console.log("trying resend tempMessage", tempMessageId)
+    
+    try {
       const response = await fetch(`/api/chat/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -293,6 +334,21 @@ const chatSlice = createSlice({
       })
       .addCase(sendMessage.rejected, (state, action) => {
         console.log(`Action sendMessage is rejected`);
+        state.loading = false;
+        state.error = "failed to send message";
+      })
+      .addCase(resendMessage.pending, (state) => {
+        console.log(`Action resendMessage is pending`);
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resendMessage.fulfilled, (state, action) => {
+        console.log(`Action resendMessage is fulfilled`);
+        state.loading = false;
+        state.messageList.unshift(action.payload);
+      })
+      .addCase(resendMessage.rejected, (state, action) => {
+        console.log(`Action resendMessage is rejected`);
         state.loading = false;
         state.error = "failed to send message";
       })

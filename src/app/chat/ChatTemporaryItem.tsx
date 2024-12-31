@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
-import { removeTempMessage, sendMessage } from "../store/slices/chatSlice";
+import { removeTempMessage, resendMessage, sendMessage } from "../store/slices/chatSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import ReactMarkdown from "react-markdown";
@@ -25,11 +25,10 @@ const ChatTemporaryItem: React.FC<ChatItemProps> = ({ id, content, senderId, rec
     const { username } = useSelector((state: RootState) => state.user);
 
     const onResend = async () => {
-        const messageData = await dispatch(sendMessage({ token, message: content, sender: username, recipient: recipientId }))
+        const messageData = await dispatch(resendMessage({ token, tempMessageId: id, message: content, sender: username, recipient: recipientId }))
         if (messageData.meta.requestStatus === "fulfilled") {
             socket.emit(`${recipientId}`, messageData.payload)
             console.log("socket emit from resend on",recipientId)
-            dispatch(removeTempMessage(id))
         }
     };
 

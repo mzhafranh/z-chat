@@ -101,7 +101,7 @@ export default function ChatList() {
     return (
         <div
             ref={chatContainerRef}
-            className="overflow-y-auto h-full flex flex-col-reverse px-4 pb-4">
+            className="overflow-y-auto h-full flex flex-col-reverse px-4 pb-4 scrollbar-custom">
             {nodeListTemp}
             {nodeList}
         </div>

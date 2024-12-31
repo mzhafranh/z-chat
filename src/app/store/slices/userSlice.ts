@@ -36,6 +36,9 @@ export const autoLogin = createAsyncThunk(
                 console.log("Auto Login: No Refresh Token Detected")
                 return;
             } else {
+                if (!process.env.JWT_REFRESH_SECRET){
+                    throw new Error("JWT_REFRESH_SECRET is not defined in the environment variables");
+                }
                 jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => {
                     if (err) {
                         if (err.name === 'TokenExpiredError') {
