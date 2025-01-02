@@ -90,12 +90,13 @@ export const loginUser = createAsyncThunk(
                 return;
             }
 
-            const { refreshToken, accessToken } = await response.json();
-            localStorage.setItem("authToken", accessToken);
-            localStorage.setItem("refreshToken", refreshToken)
+            const data = await response.json();
+            localStorage.setItem("authToken", data.accessToken);
+            localStorage.setItem("refreshToken", data.refreshToken)
             dispatch(setError("")); // Clear any previous errors
             dispatch(login(username))
             console.log('sampai sebelum ke /chat', username)
+            return data
             // window.location.href = '/chat'
         } catch (err) {
             dispatch(setError("An error occurred while logging in."));

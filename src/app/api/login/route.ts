@@ -7,6 +7,7 @@ export async function POST(req: Request) {
     const authHeader = req.headers.get('authorization');
     const refreshToken = authHeader?.split(' ')[1];
     console.log("refreshtoken:", refreshToken)
+    let newUser = false
     if (!refreshToken) {
         let body
         try {
@@ -27,11 +28,12 @@ export async function POST(req: Request) {
         const refreshToken = createRefreshToken(username);
 
         if (!user) {
+            newUser = true
             try {
                 const user = await prisma.user.create({
                     data: { username, refreshToken },
                 });
-                return NextResponse.json({ user, accessToken, refreshToken }, { status: 200 });
+                return NextResponse.json({ user, accessToken, refreshToken, newUser }, { status: 200 });
             } catch (error) {
                 return NextResponse.json(
                     { error: "Failed to create user", details: error.message },
@@ -43,7 +45,7 @@ export async function POST(req: Request) {
                 where: { username },
                 data: { refreshToken },
             });
-            return NextResponse.json({ accessToken, refreshToken }, { status: 200 });
+            return NextResponse.json({ accessToken, refreshToken, newUser }, { status: 200 });
         }
     } else {
         try{
@@ -56,7 +58,7 @@ export async function POST(req: Request) {
             }
 
             const accessToken = createAccessToken(user.username);
-            return NextResponse.json({ user, accessToken, refreshToken }, { status: 200 });
+            return NextResponse.json({ user, accessToken, refreshToken, newUser }, { status: 200 });
         } catch (error){
             return NextResponse.json({ error: "Failed to find user", details: error.message }, { status: 500 })
         }

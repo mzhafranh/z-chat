@@ -266,6 +266,9 @@ const chatSlice = createSlice({
     clearChat: (state) => {
       state.messageList = [];
     },
+    receiveContact: (state, action) => {
+      state.contactList.push(action.payload)
+    },
     receiveMessage: (state, action) => {
       state.messageList.unshift(action.payload)
     },
@@ -363,5 +366,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage, setChatAccessTime, addTempMessage, removeTempMessage } = chatSlice.actions;
+export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage, setChatAccessTime, addTempMessage, removeTempMessage, receiveContact } = chatSlice.actions;
 export default chatSlice.reducer;

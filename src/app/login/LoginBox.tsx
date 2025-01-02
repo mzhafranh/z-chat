@@ -6,6 +6,8 @@ import { loginUser } from '../store/slices/userSlice';
 import { RootState } from '../store/store';
 import type { AppDispatch } from '../store/store';
 import { useRouter } from 'next/navigation';
+import { getSocket } from "../components/SocketProvider";
+
 
 
 export default function LoginBox() {
@@ -13,12 +15,16 @@ export default function LoginBox() {
     const dispatch = useDispatch<AppDispatch>();
     const { username } = useSelector((state: RootState) => state.user);
     const router = useRouter();
+    const socket = getSocket();
 
-
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (usernameInput.trim()) {
-            dispatch(loginUser({username: usernameInput}));
+            const contactData = await dispatch(loginUser({username: usernameInput}));
+            if (contactData.payload.newUser){
+                const emittedContact = {id: contactData.payload.user.id, username: contactData.payload.user.username}
+                socket.emit(`contactList`, emittedContact)
+            }
             router.push('/chat');
         }
     };
