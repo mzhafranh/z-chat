@@ -94,7 +94,7 @@ export async function PUT(req) {
             where: { id },
             data: {
                 content: newContent,
-                updatedAt: new Date(), // Optional: Update the timestamp
+                updatedAt: new Date(),
             },
         });
         if (!updatedMessage) {
@@ -117,8 +117,7 @@ export async function DELETE(req) {
         if (!id) {
             return NextResponse.json({ error: 'Message ID is required' }, { status: 400 });
         }
-
-        // Attempt to delete the message with the provided ID
+        
         const deletedMessage = await prisma.message.delete({
             where: { id },
         });

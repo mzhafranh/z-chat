@@ -227,7 +227,7 @@ export const editMessage = createAsyncThunk(
   'chat/editMessage',
   async ({ token, id, newContent }: editMessageParams, { dispatch, rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/chat/`, {
+      const response = await fetch(`/api/chat/messages`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({

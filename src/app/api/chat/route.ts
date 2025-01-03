@@ -5,7 +5,7 @@ export async function GET() {
     try {
         const messages = await prisma.message.findMany({
             orderBy: {
-                timestamp: 'asc', // You can order messages by timestamp
+                timestamp: 'asc',
             },
         });
         return NextResponse.json(messages, { status: 200 });
@@ -20,9 +20,6 @@ export async function GET() {
 
 export async function POST(req) {
     try {
-      // Extract the Authorization header
-  
-      // Parse request body
       const body = await req.json();
       const { content, senderId, recipientId } = body;
 
@@ -35,7 +32,6 @@ export async function POST(req) {
         );
       }
   
-      // Create the message in the database
       const newMessage = await prisma.message.create({
         data: {
           content,
@@ -44,7 +40,6 @@ export async function POST(req) {
         },
       });
   
-      // Return the created message
       return NextResponse.json(newMessage, { status: 201 });
     } catch (error) {
       console.error("Error creating message:", error);
