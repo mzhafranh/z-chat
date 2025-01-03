@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ChatItem from "./ChatItem";
 import { AppDispatch, RootState } from "../store/store";
 import { useEffect, useRef, useState } from "react";
-import { clearChat, fetchMessages, receiveMessage, refreshMessages, setChatAccessTime } from "../store/slices/chatSlice";
+import { fetchMessages, receiveMessage, refreshMessages, setChatAccessTime } from "../store/slices/chatSlice";
 import { getSocket } from "../components/SocketProvider";
 import ChatTemporaryItem from "./ChatTemporaryItem";
 

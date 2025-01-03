@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
-import { removeTempMessage, resendMessage, sendMessage } from "../store/slices/chatSlice";
+import {  resendMessage } from "../store/slices/chatSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import ReactMarkdown from "react-markdown";

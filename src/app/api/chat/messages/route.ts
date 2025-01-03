@@ -61,7 +61,7 @@ export async function POST(req) {
             },
         });
 
-        
+
         return NextResponse.json(
             {
                 messages,
@@ -83,6 +83,32 @@ export async function POST(req) {
     }
 }
 
+export async function PUT(req) {
+    try {
+        const body = await req.json();
+        const { id, newContent } = body;
+        if (!id || !newContent) {
+            return NextResponse.json({ error: 'Message ID and new content is required' }, { status: 400 });
+        }
+        const updatedMessage = await prisma.message.update({
+            where: { id },
+            data: {
+                content: newContent,
+                updatedAt: new Date(), // Optional: Update the timestamp
+            },
+        });
+        if (!updatedMessage) {
+            return NextResponse.json({ error: 'Message not found' }, { status: 400 });
+        }
+        return NextResponse.json({ message: 'Message updated successfully', data: updatedMessage }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json(
+            { error: 'Failed to update the message', details: error.message },
+            { status: 500 }
+        );
+    }
+}
+
 export async function DELETE(req) {
     try {
         const body = await req.json();
@@ -97,7 +123,7 @@ export async function DELETE(req) {
             where: { id },
         });
 
-        return NextResponse.json({ message: 'Message deleted successfully', deletedMessage, id }, {status: 200});
+        return NextResponse.json({ message: 'Message deleted successfully', deletedMessage, id }, { status: 200 });
     } catch (error) {
         console.error('Error deleting message:', error);
         return NextResponse.json(

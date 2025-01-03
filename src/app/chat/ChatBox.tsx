@@ -3,7 +3,7 @@ import ChatList from "./ChatList";
 import ChatReceiver from "./ChatReceiver";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
-import { refreshMessages, sendMessage } from "../store/slices/chatSlice";
+import { sendMessage } from "../store/slices/chatSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
 import { getSocket } from "../components/SocketProvider";

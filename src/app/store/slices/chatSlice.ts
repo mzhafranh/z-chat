@@ -24,6 +24,12 @@ interface resendMessageParams {
   recipient: string
 }
 
+interface editMessageParams {
+  token: string | null,
+  id: string,
+  newContent: string,
+}
+
 interface fetchMessagesParams {
   token: string | null,
   senderId: string,
@@ -48,7 +54,8 @@ interface Message {
   content: string,
   senderId: string,
   recipientId: string,
-  timestamp: string
+  timestamp: string,
+  updatedAt: string | null
 }
 
 interface ChatState {
@@ -216,6 +223,34 @@ export const resendMessage = createAsyncThunk(
   }
 );
 
+export const editMessage = createAsyncThunk(
+  'chat/editMessage',
+  async ({ token, id, newContent }: editMessageParams, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await fetch(`/api/chat/`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: id,
+          newContent: newContent // Replace with actual sender ID
+        }),
+      });
+      if (!response.ok) {
+        const error = await response.json()
+        console.log('Failed to edit message', error);
+        return rejectWithValue(error || 'An unexpected error occurred');
+      } else {
+        const data = await response.json();
+        console.log("Message edited successfully");
+        return data; // Message data
+      }
+    } catch (error) {
+      console.log("Failed to send message", error);
+      return rejectWithValue(error || 'An unexpected error occurred');
+    }
+  }
+);
+
 export const getContacts = createAsyncThunk(
   'chat/getContacts',
   async ({ token }: getContactsParams, { dispatch }) => {
@@ -354,6 +389,26 @@ const chatSlice = createSlice({
         console.log(`Action resendMessage is rejected`);
         state.loading = false;
         state.error = "failed to send message";
+      })
+      .addCase(editMessage.pending, (state) => {
+        console.log(`Action editMessage is pending`);
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editMessage.fulfilled, (state, action) => {
+        console.log(`Action editMessage is fulfilled`);
+        state.loading = false;
+        let newMessageList = state.messageList.map((message) => 
+          message.id === action.payload.data.id
+              ? { ...message, content: action.payload.data.content, updatedAt: action.payload.data.updatedAt } 
+              : message
+        ); 
+        state.messageList = newMessageList
+      })
+      .addCase(editMessage.rejected, (state, action) => {
+        console.log(`Action editMessage is rejected`);
+        state.loading = false;
+        state.error = "failed to edit message";
       })
       .addCase(deleteMessage.fulfilled, (state, action) => {
         state.messageList = state.messageList.filter(
