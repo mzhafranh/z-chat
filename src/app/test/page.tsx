@@ -14,7 +14,7 @@ export default function Page() {
                                 ${isContactListOpen ? "translate-x-0 z-50" : "-translate-x-full lg:translate-x-0 z-0"} 
                                 fixed lg:static top-0 left-0 lg:z-auto w-full lg:w-3/12 h-full`}>
                     <div className="flex items-center justify-between p-4 text-white lg:hidden border border-l-0 border-t-0 border-r-0 border-b-black mb-2">
-                        <h1 className="font-bold text-gray-400 text-2xl">Contacts</h1>
+                        <h1 className="font-bold text-gray-300 text-2xl">Contacts</h1>
                         <button
                             onClick={toggleContactList}
                             className="text-gray-400 hover:text-gray-200 focus:outline-none"
@@ -22,7 +22,7 @@ export default function Page() {
                             <FontAwesomeIcon icon={faXmark} className="fa-2xl" />
                         </button>
                     </div>
-                    <h1 className="hidden lg:block font-bold text-gray-400 text-center text-2xl p-4 border border-r-0 border-l-0 border-t-0 border-b-black mb-2">
+                    <h1 className="hidden lg:block font-bold text-gray-300 text-center text-2xl p-4 border border-r-0 border-l-0 border-t-0 border-b-black mb-2">
                         Contacts
                     </h1>
                     <div className="h-full overflow-y-auto scrollbar-custom px-1 mr-1">
@@ -74,8 +74,14 @@ export default function Page() {
                                 <textarea
                                     id="message"
                                     name="message"
-                                    className="block w-full mr-2 text-sm px-3 rounded-lg border border-gray-600 bg-gray-700 text-gray-100 shadow-md focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 resize-none"
+                                    className="block w-full mr-2 text px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-gray-100 shadow-md focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 resize-none overflow-y-auto scrollbar-custom"
                                     placeholder="Write a message..."
+                                    rows="1" // Sets the initial height
+                                    style={{ minHeight: "40px", maxHeight: "100px" }} // Controls the maximum height
+                                    onInput={(e) => {
+                                        e.target.style.height = "auto"; // Reset the height
+                                        e.target.style.height = `${e.target.scrollHeight}px`; // Set the new height based on content
+                                    }}
                                     required
                                 />
                                 <button className="w-9 h-9 bg-amber-500 text-white rounded-full flex items-center justify-center align-bottom hover:bg-amber-600 focus:outline-none focus:ring focus:ring-amber-300">
@@ -83,6 +89,7 @@ export default function Page() {
                                 </button>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
