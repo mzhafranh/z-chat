@@ -28,17 +28,21 @@ body {
 
 /* For the scrollbar track */
 .scrollbar-custom::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Light grey background */
+  background: transparent; /* Light grey background */
   border-radius: 10px; /* Rounded corners */
 }
 
 /* For the scrollbar thumb */
 .scrollbar-custom::-webkit-scrollbar-thumb {
-  background: #888; /* Darker grey for the scrollbar */
+  background: #131922; /* Darker grey for the scrollbar */
   border-radius: 10px;
 }
 
 /* On hover, make the thumb more visible */
 .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Even darker grey */
+  background: #131922; /* Even darker grey */
+}
+
+* {
+  box-sizing: border-box;
 }

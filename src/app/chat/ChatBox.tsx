@@ -39,12 +39,9 @@ export default function ChatBox() {
     }, []);
 
     return (
-        <div className="container h-full w-10/12 flex flex-col">
+        <div className="w-full lg:w-9/12 h-full flex flex-col">
             <ChatReceiver />
-            <div
-                className="rounded-lg shadow-centered shadow-slate-500 mt-5 p-5 flex flex-col"
-                style={{ height: "90%" }}
-            >
+            <div className="bg-gray-800 border-l border-black h-full p-5 flex flex-col" style={{height:"92%"}}>
                 {currentContact != "Recipient" ? (
                     <>
                         <ChatList />
@@ -64,13 +61,17 @@ export default function ChatBox() {
                                             handleSubmit(e); // Submit the form
                                         }
                                     }}
-                                    className="block w-full mr-2 text-sm px-3 py-2 rounded-lg border border-solid border-gray-300 shadow-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                                    className="block w-full mr-2 text px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-gray-100 shadow-md focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 resize-none overflow-y-auto scrollbar-custom"
                                     placeholder="Write a message..."
+                                    rows={1} // Sets the initial height
+                                    style={{ minHeight: "40px", maxHeight: "100px" }} // Controls the maximum height
+                                    onInput={(e) => {
+                                        e.target.style.height = "auto"; // Reset the height
+                                        e.target.style.height = `${e.target.scrollHeight}px`; // Set the new height based on content
+                                    }}
                                     required
                                 />
-                                <button
-                                    className="w-9 h-9 bg-blue-500 text-white rounded-full flex items-center justify-center align-bottom hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-200"
-                                >
+                                <button className="w-9 h-9 bg-amber-500 text-white rounded-lg flex items-center justify-center align-bottom hover:bg-amber-600 focus:outline-none focus:ring focus:ring-amber-300">
                                     <FontAwesomeIcon icon={faPaperPlane} className="fa-lg" />
                                 </button>
                             </div>
@@ -78,7 +79,7 @@ export default function ChatBox() {
                     </>
                 ) : (
                     <div className="flex w-full h-full items-center justify-center">
-                        <p className="text-xl text-gray-500">Select a chat to start messaging</p>
+                        <p className="text-xl text-white">Select a chat to start messaging</p>
                     </div>
                 )}
             </div>

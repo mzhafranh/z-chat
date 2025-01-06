@@ -1,18 +1,40 @@
+import { useDispatch, useSelector } from "react-redux";
 import ContactList from "./ContactList";
+import { AppDispatch, RootState } from "../store/store";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { toggleContactListState } from "../store/slices/chatSlice";
 
 export default function ContactBox() {
+    const dispatch = useDispatch<AppDispatch>();
+    const { isContactListOpen } = useSelector((state: RootState) => state.chat);
+
+    const toggleContactList = () => dispatch(toggleContactListState());
+
     const handleLogout = () => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('refreshToken');
         window.location.href = "/login";
     };
-    
+
     return (
-        <div className="container w-2/12 rounded-lg shadow-centered shadow-slate-500 mr-5 flex flex-col">
-            <h1 className="font-bold text-gray-500 text-center text-2xl p-4">Contacts</h1>
-            <hr className="mb-4" />
-            <ContactList/>
-            <button onClick={handleLogout} className="text-red-500 border font-bold text-sm border-red-500 rounded-lg px-5 py-2 mx-12 my-4 hover:bg-red-600 hover:text-white focus:bg-red-800">LOG OUT</button>
+        <div className={`bg-gray-800 h-full text-gray-100 flex flex-col transition-all duration-300 ease-in-out 
+                                ${isContactListOpen ? "translate-x-0 z-50" : "-translate-x-full lg:translate-x-0 z-0"} 
+                                fixed lg:static top-0 left-0 lg:z-auto w-full lg:w-3/12 h-full`}>
+            <div className="flex items-center justify-between p-4 text-white lg:hidden border-b border-black mb-2 py-5" style={{height:"8%"}}>
+                <h1 className="font-bold text-gray-300 text-2xl">Contacts</h1>
+                <button
+                    onClick={toggleContactList}
+                    className="text-gray-400 hover:text-gray-200 focus:outline-none"
+                >
+                    <FontAwesomeIcon icon={faXmark} className="fa-2xl" />
+                </button>
+            </div>
+            <h1 className="hidden lg:block font-bold text-gray-300 text-center text-2xl  py-5" style={{height:"8%"}}>
+                Contacts
+            </h1>
+            <ContactList />
+            <button onClick={handleLogout} className="text-red-400 border font-bold text-sm border-red-500 rounded-lg px-5 py-2 mx-4 lg:mx-12 my-4 hover:bg-red-500 hover:text-white focus:bg-red-600">LOG OUT</button>
         </div>
     )
 }

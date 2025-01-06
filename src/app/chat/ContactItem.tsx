@@ -48,11 +48,11 @@ const ContactItem: React.FC<ContactItemProps> = ({ id, username, currentContact,
         return (
             <>
                 {username === currentContact ? (
-                    <button className="text-white text-md w-full text-left bg-blue-500 px-4 py-2">{username}</button>
+                    <button className="text-gray-100 text-lg w-full text-left bg-amber-600 px-4 py-2 mb-1 rounded-md">{username}</button>
                 ) : (
-                    <button className="text-gray-500 w-full text-md px-4 py-2 text-left hover:bg-blue-500 hover:text-white" onClick={handleChangeContact}>
+                    <button className="text-gray-400 w-full text-lg px-4 py-2 text-left hover:bg-amber-600 hover:text-white mb-1 rounded-md" onClick={handleChangeContact}>
                         {username}
-                        {unreadCount > 0 && <span className="ml-2 text-sm text-red-500">({unreadCount})</span>}
+                        {unreadCount > 0 && <span className="ml-2 text-sm text-amber-400">({unreadCount})</span>}
                         </button>
                 )}
             </>

@@ -30,9 +30,9 @@ export default function LoginBox() {
     };
 
     return (
-        <div className="container w-96 m-3 p-3 rounded-lg shadow-centered shadow-slate-500 flex flex-col">
+        <div className="container w-96 m-3 p-3 rounded-lg shadow-centered bg-gray-800 flex flex-col">
             <div className="">
-                <h1 className="text-emerald-500 font-bold text-center">LOGIN</h1>
+                <h1 className="text-amber-600 font-bold text-center">LOGIN</h1>
             </div>
             <hr className="mt-2"/>
             <div className="">
@@ -41,7 +41,7 @@ export default function LoginBox() {
                         type="text"
                         id="username"
                         name="username"
-                        className="mt-4 block w-full p-2 rounded border border-solid border-gray-300 shadow-md"
+                        className="mt-4 block w-full p-2 rounded border border-solid border-gray-300 shadow-md text-black"
                         placeholder="Username"
                         value={usernameInput}
                         onChange={(e) => setUsernameInput(e.target.value)}
@@ -49,7 +49,7 @@ export default function LoginBox() {
                     />
                     <button
                         type="submit"
-                        className="w-1/2 mt-4 block mx-auto bg-sky-500 text-white text-sm py-2 px-4 rounded hover:bg-sky-600 focus:outline-none focus:ring focus:ring-sky-200 focus:ring-opacity-50">
+                        className="w-1/2 mt-4 block mx-auto bg-amber-500 text-white text-sm py-2 px-4 rounded hover:bg-amber-600 focus:outline-none focus:ring focus:ring-amber-200 focus:ring-opacity-50">
                         LOG IN
                     </button>
                 </form>

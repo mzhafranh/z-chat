@@ -58,7 +58,7 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId 
                     </div>
                 )}
                 <div
-                    className={`${username === senderId ? "bg-blue-500 text-white" : "bg-white text-black border"
+                    className={`${username === senderId ? "bg-amber-500 text-white" : "bg-gray-700 text-gray-100 border border-gray-600"
                         } font-sans px-4 py-2 rounded-2xl max-w-sm mb-2 break-words`}
                 >
                     {isEditing ? (
@@ -66,7 +66,7 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId 
                             <textarea
                                 value={editedContent}
                                 onChange={(e) => setEditedContent(e.target.value)}
-                                className="w-full px-2 py-8 border rounded text-black scrollbar-custom"
+                                className="w-full bg-gray-700 px-2 py-8 border rounded text-white scrollbar-custom"
                             />
                             <div className="flex justify-end space-x-2 mt-2">
                                 <button className="px-1" onClick={onSaveEdit}>
@@ -95,7 +95,7 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId 
                                 td: ({ children }) => <td className="border px-4 py-2">{children}</td>,
                                 img: ({ src, alt }) => <img src={src} alt={alt} className="max-w-full h-auto my-2" />,
                                 a: ({ href, children }) => (
-                                    <a href={href!} className="text-blue-300 underline" target="_blank" rel="noopener noreferrer">
+                                    <a href={href!} className="text-violet-500 underline" target="_blank" rel="noopener noreferrer">
                                         {children}
                                     </a>
                                 ),

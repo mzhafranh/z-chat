@@ -67,7 +67,8 @@ interface ChatState {
   totalPage: number,
   loading: boolean,
   error: string | null,
-  chatAccessTime: string
+  chatAccessTime: string,
+  isContactListOpen: boolean
 }
 
 // Example: Fetch chat messages from an API
@@ -281,7 +282,8 @@ const initialState: ChatState = {
   totalPage: 0,
   loading: false, // For loading states
   error: null, // To store error messages
-  chatAccessTime: new Date().toISOString()
+  chatAccessTime: new Date().toISOString(),
+  isContactListOpen: false
 };
 
 // The chat slice
@@ -319,6 +321,9 @@ const chatSlice = createSlice({
     setChatAccessTime(state) {
       state.chatAccessTime = new Date().toISOString();
     },
+    toggleContactListState(state) {
+      state.isContactListOpen = !(state.isContactListOpen)
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -421,5 +426,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage, setChatAccessTime, addTempMessage, removeTempMessage, receiveContact } = chatSlice.actions;
+export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage, setChatAccessTime, addTempMessage, removeTempMessage, receiveContact, toggleContactListState } = chatSlice.actions;
 export default chatSlice.reducer;
