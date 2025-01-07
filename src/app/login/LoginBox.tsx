@@ -34,14 +34,13 @@ export default function LoginBox() {
             <div className="">
                 <h1 className="text-amber-600 font-bold text-center">LOGIN</h1>
             </div>
-            <hr className="mt-2"/>
             <div className="">
                 <form action="" onSubmit={handleLogin} className="w-full">
                     <input
                         type="text"
                         id="username"
                         name="username"
-                        className="mt-4 block w-full p-2 rounded border border-solid border-gray-300 shadow-md text-black"
+                        className="mt-4 block w-full p-2 rounded border bg-gray-600 border-solid border-gray-300 shadow-md text-white"
                         placeholder="Username"
                         value={usernameInput}
                         onChange={(e) => setUsernameInput(e.target.value)}

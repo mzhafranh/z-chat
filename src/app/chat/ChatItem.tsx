@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { deleteMessage, editMessage } from "../store/slices/chatSlice";
@@ -14,9 +14,10 @@ interface ChatItemProps {
     content: string;
     senderId: string;
     recipientId: string;
+    updatedAt: string | null;
 }
 
-const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId }) => {
+const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId, updatedAt }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedContent, setEditedContent] = useState(content);
@@ -24,6 +25,10 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId 
     const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
 
     const { username } = useSelector((state: RootState) => state.user);
+
+    // useEffect(() => {
+    //     console.log("[MesssageList]",content, updatedAt);
+    // }, []);
 
     const onDelete = () => {
         dispatch(deleteMessage({ token, id }));
@@ -47,16 +52,22 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId 
         >
             <div className="relative flex items-center">
                 {/* Action Buttons */}
-                {isHovered && username === senderId && !isEditing && (
-                    <div className="mr-2 flex space-x-1">
-                        <button className="px-1 py-1" onClick={() => setIsEditing(true)}>
-                            <FontAwesomeIcon icon={faPenToSquare} className="fa-lg text-gray-600 hover:text-yellow-600" />
-                        </button>
-                        <button className="px-1 py-1" onClick={onDelete}>
-                            <FontAwesomeIcon icon={faTrashCan} className="fa-lg text-gray-600 hover:text-red-600" />
-                        </button>
-                    </div>
-                )}
+
+                <div className="mr-2 flex space-x-1">
+                    {updatedAt && username === senderId && (
+                        <p className="text-sm text-gray-500">(edited)</p>
+                    )}
+                    {isHovered && username === senderId && !isEditing && (
+                        <>
+                            <button className="px-1 py-1" onClick={() => setIsEditing(true)}>
+                                <FontAwesomeIcon icon={faPenToSquare} className="fa-lg text-gray-600 hover:text-yellow-600" />
+                            </button>
+                            <button className="px-1 py-1" onClick={onDelete}>
+                                <FontAwesomeIcon icon={faTrashCan} className="fa-lg text-gray-600 hover:text-red-600" />
+                            </button>
+                        </>
+                    )}
+                </div>
                 <div
                     className={`${username === senderId ? "bg-amber-500 text-white" : "bg-gray-700 text-gray-100 border border-gray-600"
                         } font-sans px-4 py-2 rounded-2xl max-w-sm mb-2 break-words`}
@@ -128,6 +139,9 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId 
                         </ReactMarkdown>
                     )}
                 </div>
+                    {updatedAt && username != senderId && (
+                            <p className="text-sm text-gray-500 pl-2">(edited)</p>
+                    )}
             </div>
         </div>
     );

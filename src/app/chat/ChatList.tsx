@@ -95,6 +95,7 @@ export default function ChatList() {
             content={message.content}
             senderId={message.senderId}
             recipientId={message.recipientId}
+            updatedAt={message.updatedAt}
         />
     )
 
