@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ChatItem from "./ChatItem";
 import { AppDispatch, RootState } from "../store/store";
 import { useEffect, useRef, useState } from "react";
-import { fetchMessages, receiveMessage, refreshMessages, setChatAccessTime } from "../store/slices/chatSlice";
+import { fetchMessages, receiveMessage, refreshMessages, setChatAccessTime, updateEditedMessage } from "../store/slices/chatSlice";
 import { getSocket } from "../components/SocketProvider";
 import ChatTemporaryItem from "./ChatTemporaryItem";
 
@@ -35,6 +35,20 @@ export default function ChatList() {
             if (message.senderId === currentContactRef.current && message.recipientId === username) {
                 console.log("ReceiveMessage executed")
                 dispatch(receiveMessage(message))
+            }
+        })
+        return () => {
+            socket.off(`${username}`);
+        };
+    }, [socket])
+
+    useEffect(() => {
+        socket.on(`${username}-edit`, (message) => {
+            console.log(`Received Edit Message on ${username}`)
+            console.log(message)
+            if (message.data.senderId === currentContactRef.current && message.data.recipientId === username) {
+                console.log("Receive Edit Message executed")
+                dispatch(updateEditedMessage(message))
             }
         })
         return () => {

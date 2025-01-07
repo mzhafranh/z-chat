@@ -8,6 +8,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { getSocket } from "../components/SocketProvider";
 
 interface ChatItemProps {
     id: string;
@@ -23,6 +24,8 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId,
     const [editedContent, setEditedContent] = useState(content);
     const dispatch = useDispatch<AppDispatch>();
     const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+    const socket = getSocket()
+
 
     const { username } = useSelector((state: RootState) => state.user);
 
@@ -34,8 +37,14 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId,
         dispatch(deleteMessage({ token, id }));
     };
 
-    const onSaveEdit = () => {
-        dispatch(editMessage({ token, id, newContent: editedContent }));
+    const onSaveEdit = async () => {
+        if (socket){
+            const editedMessage = await dispatch(editMessage({ token, id, newContent: editedContent }));
+            if (editedMessage.meta.requestStatus === "fulfilled") {
+                socket.emit(`${recipientId}-edit`, editedMessage.payload)
+                console.log(`socket emit on ${recipientId}-edit`)
+            }
+        }
         setIsEditing(false);
     };
 

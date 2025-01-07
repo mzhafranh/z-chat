@@ -270,8 +270,6 @@ export const getContacts = createAsyncThunk(
   }
 )
 
-
-
 // Initial state
 const initialState: ChatState = {
   currentContact: 'Recipient',
@@ -308,6 +306,14 @@ const chatSlice = createSlice({
     },
     receiveMessage: (state, action) => {
       state.messageList.unshift(action.payload)
+    },
+    updateEditedMessage: (state, action) => {
+      let newMessageList = state.messageList.map((message) => 
+        message.id === action.payload.data.id
+            ? { ...message, content: action.payload.data.content, updatedAt: action.payload.data.updatedAt } 
+            : message
+      ); 
+      state.messageList = newMessageList
     },
     addTempMessage: (state, action) => {
       state.tempMessageList.unshift(action.payload)
@@ -426,5 +432,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage, setChatAccessTime, addTempMessage, removeTempMessage, receiveContact, toggleContactListState } = chatSlice.actions;
+export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage, setChatAccessTime, addTempMessage, removeTempMessage, receiveContact, toggleContactListState, updateEditedMessage } = chatSlice.actions;
 export default chatSlice.reducer;

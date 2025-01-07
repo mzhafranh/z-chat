@@ -29,7 +29,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ id, username, currentContact,
     useEffect(() => {
         socket.on(`${currentUser}`, (message) => {
             if (message.senderId === username && message.recipientId === currentUser && currentContactRef.current != username){
-                console.log(`Contactlist received message ${currentUser}`)
+                console.log(`Notification received on ${currentUser}`)
                 setUnreadCount((prevCount) => prevCount + 1);
             }
         })
