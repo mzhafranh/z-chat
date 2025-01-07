@@ -49,7 +49,7 @@ const ChatTemporaryItem: React.FC<ChatItemProps> = ({ id, content, senderId, rec
                 {/* Message Content with Markdown and Syntax Highlighting */}
                 <div
                     className={`${
-                        username === senderId ? "bg-green-500 text-white" : "bg-white text-black border"
+                        username === senderId ? "bg-violet-600 text-white" : "bg-white text-black border"
                     } font-sans px-4 py-2 rounded-2xl max-w-sm mb-2 break-words`}
                 >
                     <ReactMarkdown

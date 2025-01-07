@@ -52,7 +52,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ id, username, currentContact,
                 ) : (
                     <button className="text-gray-400 w-full text-lg px-4 py-2 text-left hover:bg-amber-600 hover:text-white mb-1 rounded-md" onClick={handleChangeContact}>
                         {username}
-                        {unreadCount > 0 && <span className="ml-2 text-sm text-amber-400">({unreadCount})</span>}
+                        {unreadCount > 0 && <span className="ml-2 text-sm bg-amber-600 text-amber-200 rounded-full px-1">{unreadCount}</span>}
                         </button>
                 )}
             </>
