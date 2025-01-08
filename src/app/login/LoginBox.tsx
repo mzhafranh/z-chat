@@ -22,7 +22,7 @@ export default function LoginBox() {
         if (usernameInput.trim()) {
             const contactData = await dispatch(loginUser({username: usernameInput}));
             if (contactData.payload.newUser){
-                const emittedContact = {id: contactData.payload.user.id, username: contactData.payload.user.username}
+                const emittedContact = {id: contactData.payload.user.id, username: contactData.payload.user.username, totalNotifications: 0}
                 socket.emit(`contactList`, emittedContact)
             }
             router.push('/chat');

@@ -23,12 +23,6 @@ export default function ChatList() {
         dispatch(refreshMessages({ senderId: username, recipientId: currentContact, token }));
     }, [currentContact]);
 
-    // useEffect(() => {
-    //     if (chatContainerRef.current) {
-    //         chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    //     }
-    // }, [messageList]);
-
     useEffect(() => {
         socket.on(`${username}`, (message) => {
             console.log(`Received Message on ${username}`)

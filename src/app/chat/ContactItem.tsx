@@ -17,39 +17,9 @@ const ContactItem: React.FC<ContactItemProps> = ({ id, username, currentContact,
     const dispatch = useDispatch<AppDispatch>();
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
 
-    // const socket = getSocket()
-    // const currentContactRef = useRef<string | null>(null);
-    // const [unreadCount, setUnreadCount] = useState<number>(0);
-
-    // useEffect(() => {
-    //     console.log("[ContactList]",username, totalNotifications);
-    // }, []);
-
-    // useEffect(() => {
-    //     currentContactRef.current = currentContact;
-    //     console.log("[Notification]",unreadCount)
-    //     console.log(username, currentUser , currentContactRef.current)
-    // }, [currentContact]);
-
-    // useEffect(() => {
-    //     socket.on(`${currentUser}`, (message) => {
-    //         // console.log(message)
-    //         // console.log(message.senderId, username, message.recipientId , currentUser , currentContactRef.current)
-    //         if (message.senderId === username && message.recipientId === currentUser && currentContactRef.current != username){
-    //             console.log(`Notification received on ${currentUser}`)
-    //             setUnreadCount((prevCount) => prevCount + 1);
-    //         }
-    //     })
-    //     return () => {
-    //         socket.off(`${username}`);
-    //     };
-    // }, [socket])
-
-
     const handleChangeContact = () => {
         dispatch(setCurrentContact(username))
         dispatch(readMessage({token, senderId: username, recipientId: currentUser}))
-        // setUnreadCount(0);
     }
 
     if (username === currentUser) {
