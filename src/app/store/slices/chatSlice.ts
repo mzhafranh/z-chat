@@ -32,6 +32,12 @@ interface editMessageParams {
   newContent: string,
 }
 
+interface readMessageParams {
+  token: string | null,
+  senderId: string,
+  recipientId: string
+}
+
 interface fetchMessagesParams {
   token: string | null,
   senderId: string,
@@ -255,6 +261,34 @@ export const editMessage = createAsyncThunk(
   }
 );
 
+export const readMessage = createAsyncThunk(
+  'chat/readMessage',
+  async ({ token, senderId, recipientId }: readMessageParams, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await fetch(`/api/chat/messages/notification`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          senderId: senderId, 
+          recipientId: recipientId, 
+        }),
+      });
+      if (!response.ok) {
+        const error = await response.json()
+        console.log('Failed to update message', error);
+        return rejectWithValue(error || 'An unexpected error occurred');
+      } else {
+        const data = await response.json();
+        console.log("Message read successfully");
+        return data; 
+      }
+    } catch (error) {
+      console.log("Failed to update message", error);
+      return rejectWithValue(error || 'An unexpected error occurred');
+    }
+  }
+);
+
 export const getContacts = createAsyncThunk(
   'chat/getContacts',
   async ({ token, username }: getContactsParams, { dispatch }) => {
@@ -321,6 +355,14 @@ const chatSlice = createSlice({
             : message
       ); 
       state.messageList = newMessageList
+    },
+    addNotification: (state, action) => {
+      let newContactList = state.contactList.map((contact) => 
+        contact.username === action.payload
+            ? { ...contact, totalNotifications: contact.totalNotifications + 1 } 
+            : contact
+      ); 
+      state.contactList = newContactList
     },
     addTempMessage: (state, action) => {
       state.tempMessageList.unshift(action.payload)
@@ -428,6 +470,26 @@ const chatSlice = createSlice({
         state.loading = false;
         state.error = "failed to edit message";
       })
+      .addCase(readMessage.pending, (state) => {
+        console.log(`Action readMessage is pending`);
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(readMessage.fulfilled, (state, action) => {
+        console.log(`Action readMessage is fulfilled`);
+        state.loading = false;
+        let newContactList = state.contactList.map((contact) => 
+          contact.username === action.payload.contact
+              ? { ...contact, totalNotifications: 0 } 
+              : contact
+        ); 
+        state.contactList = newContactList
+      })
+      .addCase(readMessage.rejected, (state, action) => {
+        console.log(`Action readMessage is rejected`);
+        state.loading = false;
+        state.error = "failed to send message";
+      })
       .addCase(deleteMessage.fulfilled, (state, action) => {
         state.messageList = state.messageList.filter(
           (message) => message.id !== action.payload.id
@@ -439,5 +501,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage, setChatAccessTime, addTempMessage, removeTempMessage, receiveContact, toggleContactListState, updateEditedMessage } = chatSlice.actions;
+export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage, setChatAccessTime, addTempMessage, removeTempMessage, receiveContact, toggleContactListState, updateEditedMessage, addNotification } = chatSlice.actions;
 export default chatSlice.reducer;

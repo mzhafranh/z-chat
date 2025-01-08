@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ChatItem from "./ChatItem";
 import { AppDispatch, RootState } from "../store/store";
 import { useEffect, useRef, useState } from "react";
-import { fetchMessages, receiveMessage, refreshMessages, setChatAccessTime, updateEditedMessage } from "../store/slices/chatSlice";
+import { addNotification, fetchMessages, receiveMessage, refreshMessages, setChatAccessTime, updateEditedMessage } from "../store/slices/chatSlice";
 import { getSocket } from "../components/SocketProvider";
 import ChatTemporaryItem from "./ChatTemporaryItem";
 
@@ -33,8 +33,11 @@ export default function ChatList() {
         socket.on(`${username}`, (message) => {
             console.log(`Received Message on ${username}`)
             if (message.senderId === currentContactRef.current && message.recipientId === username) {
-                console.log("ReceiveMessage executed")
                 dispatch(receiveMessage(message))
+                console.log("ReceiveMessage executed")
+            } else {
+                dispatch(addNotification(message.senderId))
+                console.log("addNotification executed")
             }
         })
         return () => {

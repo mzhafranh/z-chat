@@ -42,7 +42,7 @@ export default function ContactList() {
         />
     )
     
-    console.log(contactList)
+    // console.log(contactList)
 
     return (
         <div className="overflow-y-auto scrollbar-custom px-1 mr-1" style={{height:"92%"}}>

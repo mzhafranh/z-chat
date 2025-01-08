@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store/store";
-import { setCurrentContact } from "../store/slices/chatSlice";
+import { readMessage, setCurrentContact } from "../store/slices/chatSlice";
 import { getSocket } from "../components/SocketProvider";
 import { useEffect, useRef, useState } from "react";
 
@@ -15,19 +15,21 @@ interface ContactItemProps {
 
 const ContactItem: React.FC<ContactItemProps> = ({ id, username, currentContact, currentUser, totalNotifications}) => {
     const dispatch = useDispatch<AppDispatch>();
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+
     // const socket = getSocket()
-    const currentContactRef = useRef<string | null>(null);
+    // const currentContactRef = useRef<string | null>(null);
     // const [unreadCount, setUnreadCount] = useState<number>(0);
 
-    useEffect(() => {
-        console.log("[ContactList]",username, totalNotifications);
-    }, []);
+    // useEffect(() => {
+    //     console.log("[ContactList]",username, totalNotifications);
+    // }, []);
 
-    useEffect(() => {
-        currentContactRef.current = currentContact;
-        // console.log("[Notification]",unreadCount)
-        // console.log(username, currentUser , currentContactRef.current)
-    }, [currentContact]);
+    // useEffect(() => {
+    //     currentContactRef.current = currentContact;
+    //     console.log("[Notification]",unreadCount)
+    //     console.log(username, currentUser , currentContactRef.current)
+    // }, [currentContact]);
 
     // useEffect(() => {
     //     socket.on(`${currentUser}`, (message) => {
@@ -46,6 +48,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ id, username, currentContact,
 
     const handleChangeContact = () => {
         dispatch(setCurrentContact(username))
+        dispatch(readMessage({token, senderId: username, recipientId: currentUser}))
         // setUnreadCount(0);
     }
 

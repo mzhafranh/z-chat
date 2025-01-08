@@ -3,7 +3,7 @@ import ChatList from "./ChatList";
 import ChatReceiver from "./ChatReceiver";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
-import { sendMessage } from "../store/slices/chatSlice";
+import { addNotification, sendMessage } from "../store/slices/chatSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
 import { getSocket } from "../components/SocketProvider";
@@ -34,14 +34,30 @@ export default function ChatBox() {
         }
     };
 
+
     useEffect(() => {
-        console.log("currentContact", currentContact)
-    }, []);
+        if (socket) {
+            socket.on(`${username}`, (message) => {
+                console.log(`Received chatbox message on ${username}`)
+                if (message.recipientId === username) {
+                    dispatch(addNotification(message.senderId))
+                    console.log("addNotification executed")
+                }
+            })
+            return () => {
+                socket.off(`${username}`);
+            }
+        }
+    }, [socket])
+
+    // useEffect(() => {
+    //     console.log("currentContact", currentContact)
+    // }, []);
 
     return (
         <div className="w-full lg:w-9/12 h-full flex flex-col">
             <ChatReceiver />
-            <div className="bg-gray-800 border-l border-black h-full p-5 flex flex-col" style={{height:"92%"}}>
+            <div className="bg-gray-800 border-l border-black h-full p-5 flex flex-col" style={{ height: "92%" }}>
                 {currentContact != "Recipient" ? (
                     <>
                         <ChatList />
