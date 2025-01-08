@@ -14,7 +14,7 @@ export default function Page() {
 
 
   useEffect(() => {
-    if (!token) {
+    if (!token || !username) {
         window.location.href = "/login";
     } else {
         dispatch(verifyToken({ token }))
@@ -31,7 +31,6 @@ export default function Page() {
             });
     }
 }, [token, dispatch]);
-
 
   return (
     <div className="flex justify-center h-screen items-center bg-gray-900 text-gray-100">

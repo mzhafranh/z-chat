@@ -2,11 +2,13 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 interface getContactsParams {
   token: string | null;
+  username: string;
 }
 
 interface Contact {
   id: string,
-  username: string
+  username: string,
+  totalNotifications: number
 }
 
 interface sendMessageParams {
@@ -55,7 +57,8 @@ interface Message {
   senderId: string,
   recipientId: string,
   timestamp: string,
-  updatedAt: string | null
+  updatedAt: string | null,
+  isRead: boolean
 }
 
 interface ChatState {
@@ -254,11 +257,14 @@ export const editMessage = createAsyncThunk(
 
 export const getContacts = createAsyncThunk(
   'chat/getContacts',
-  async ({ token }: getContactsParams, { dispatch }) => {
+  async ({ token, username }: getContactsParams, { dispatch }) => {
     try {
-      const response = await fetch("/api/user", {
-        method: "GET",
+      const response = await fetch("/api/user/contacts", {
+        method: "POST",
         headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: username
+        })
       });
 
       if (!response.ok) throw new Error('Failed to get contacts');
@@ -269,6 +275,7 @@ export const getContacts = createAsyncThunk(
     }
   }
 )
+
 
 // Initial state
 const initialState: ChatState = {
@@ -340,7 +347,7 @@ const chatSlice = createSlice({
       })
       .addCase(getContacts.fulfilled, (state, action) => {
         state.loading = false;
-        state.contactList = action.payload; // Set messages
+        state.contactList = action.payload;
       })
       .addCase(getContacts.rejected, (state, action) => {
         state.loading = false;

@@ -105,7 +105,7 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId,
                                 h2: ({ children }) => <h2 className="text-xl font-semibold mb-3">{children}</h2>,
                                 h3: ({ children }) => <h3 className="text-lg font-mediummb-2">{children}</h3>,
                                 p: ({ children }) => <p className="">{children}</p>,
-                                pre: ({ children }) => <pre className="bg-gray-900 text-white p-4 rounded">{children}</pre>,
+                                pre: ({ children }) => <pre className="bg-gray-900 text-white p-4 rounded-lg">{children}</pre>,
                                 ul: ({ children }) => <ul className="list-disc pl-6">{children}</ul>,
                                 ol: ({ children }) => <ol className="list-decimal pl-6">{children}</ol>,
                                 li: ({ children }) => <li className="mb-1">{children}</li>,
@@ -137,7 +137,7 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId,
                                             {codeString.trim()}
                                         </SyntaxHighlighter>
                                     ) : (
-                                        <code className={`${className} p-1 rounded`} {...props}>
+                                        <code className={`${className} p-1`} {...props}>
                                             {codeString}
                                         </code>
                                     );

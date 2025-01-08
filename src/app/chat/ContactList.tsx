@@ -17,7 +17,7 @@ export default function ContactList() {
     const { username } = useSelector((state: RootState) => state.user);
 
     useEffect(() => {
-        dispatch(getContacts({ token }))
+        dispatch(getContacts({ token, username }))
     }, []);
 
     useEffect(() => {
@@ -31,14 +31,18 @@ export default function ContactList() {
     }, [socket])
 
     const nodeList = contactList.map(
-        (contact, index) => <ContactItem
+        (contact, index) => 
+        <ContactItem
             key={contact.id}
             id={contact.id}
             username={contact.username}
             currentContact={currentContact}
             currentUser={username}
+            totalNotifications={contact.totalNotifications}
         />
     )
+    
+    console.log(contactList)
 
     return (
         <div className="overflow-y-auto scrollbar-custom px-1 mr-1" style={{height:"92%"}}>

@@ -29,7 +29,7 @@ const initialState: UserState = {
 
 export const autoLogin = createAsyncThunk(
     'user/autoLogin',
-    async ({refreshToken}: autoLoginParams, { dispatch }) => {
+    async ({refreshToken}: autoLoginParams, { dispatch, rejectWithValue }) => {
         try {
             console.log("refreshToken", refreshToken)
             if (!refreshToken) {
@@ -62,6 +62,7 @@ export const autoLogin = createAsyncThunk(
                     return false;
                 }
                 const { accessToken, user } = await response.json();
+                console.log("[UserSlice] Log User", user)
                 localStorage.setItem("authToken", accessToken);
                 dispatch(setError("")); // Clear any previous errors
                 dispatch(login(user.username))

@@ -9,39 +9,44 @@ interface ContactItemProps {
     id: string;
     username: string;
     currentContact: string | null;
-    currentUser: string
+    currentUser: string;
+    totalNotifications: number;
 }
 
-const ContactItem: React.FC<ContactItemProps> = ({ id, username, currentContact, currentUser}) => {
+const ContactItem: React.FC<ContactItemProps> = ({ id, username, currentContact, currentUser, totalNotifications}) => {
     const dispatch = useDispatch<AppDispatch>();
-    const socket = getSocket()
+    // const socket = getSocket()
     const currentContactRef = useRef<string | null>(null);
-    const [unreadCount, setUnreadCount] = useState<number>(0);
+    // const [unreadCount, setUnreadCount] = useState<number>(0);
 
-    // useEffect(() => {
-    //     console.log("[ContactList]",currentContactRef.current, username, currentUser);
-    // }, []);
+    useEffect(() => {
+        console.log("[ContactList]",username, totalNotifications);
+    }, []);
 
     useEffect(() => {
         currentContactRef.current = currentContact;
+        // console.log("[Notification]",unreadCount)
+        // console.log(username, currentUser , currentContactRef.current)
     }, [currentContact]);
 
-    useEffect(() => {
-        socket.on(`${currentUser}`, (message) => {
-            if (message.senderId === username && message.recipientId === currentUser && currentContactRef.current != username){
-                console.log(`Notification received on ${currentUser}`)
-                setUnreadCount((prevCount) => prevCount + 1);
-            }
-        })
-        return () => {
-            socket.off(`${username}`);
-        };
-    }, [socket])
+    // useEffect(() => {
+    //     socket.on(`${currentUser}`, (message) => {
+    //         // console.log(message)
+    //         // console.log(message.senderId, username, message.recipientId , currentUser , currentContactRef.current)
+    //         if (message.senderId === username && message.recipientId === currentUser && currentContactRef.current != username){
+    //             console.log(`Notification received on ${currentUser}`)
+    //             setUnreadCount((prevCount) => prevCount + 1);
+    //         }
+    //     })
+    //     return () => {
+    //         socket.off(`${username}`);
+    //     };
+    // }, [socket])
 
 
     const handleChangeContact = () => {
         dispatch(setCurrentContact(username))
-        setUnreadCount(0);
+        // setUnreadCount(0);
     }
 
     if (username === currentUser) {
@@ -55,7 +60,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ id, username, currentContact,
                 ) : (
                     <button className="text-gray-400 w-full text-lg px-4 py-2 text-left hover:bg-amber-600 hover:text-white mb-1 rounded-md" onClick={handleChangeContact}>
                         {username}
-                        {unreadCount > 0 && <span className="ml-2 text-sm bg-amber-600 text-amber-200 rounded-full px-1">{unreadCount}</span>}
+                        {totalNotifications > 0 && <span className="ml-2 text-sm bg-red-500 text-white rounded-full px-1">{totalNotifications}</span>}
                         </button>
                 )}
             </>
