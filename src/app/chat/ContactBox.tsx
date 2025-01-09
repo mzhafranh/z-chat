@@ -8,6 +8,7 @@ import { toggleContactListState } from "../store/slices/chatSlice";
 export default function ContactBox() {
     const dispatch = useDispatch<AppDispatch>();
     const { isContactListOpen } = useSelector((state: RootState) => state.chat);
+    const { username } = useSelector((state: RootState) => state.user);
 
     const toggleContactList = () => dispatch(toggleContactListState());
 
@@ -34,7 +35,7 @@ export default function ContactBox() {
                 </h1>
                 <button
                     onClick={toggleContactList}
-                    className="text-gray-400 hover:text-gray-200 focus:outline-none"
+                    className="text-gray-400 hover:text-gray-200 focus:outline-none pr-2"
                 >
                     <FontAwesomeIcon icon={faXmark} className="fa-2xl" />
                 </button>
@@ -51,9 +52,10 @@ export default function ContactBox() {
             </div>
 
             <ContactList />
+            <p className="text-amber-500 font-bold text-center my-2 text-lg">{username}</p>
             <button
                 onClick={handleLogout}
-                className="text-red-400 border font-bold text-sm border-red-500 rounded-lg px-5 py-2 mx-4 lg:mx-12 my-4 hover:bg-red-500 hover:text-white focus:bg-red-600"
+                className="text-red-400 border font-bold text-sm border-red-500 rounded-lg px-5 py-2 mx-4 lg:mx-12 mb-4 hover:bg-red-500 hover:text-white focus:bg-red-600"
             >
                 LOG OUT
             </button>
