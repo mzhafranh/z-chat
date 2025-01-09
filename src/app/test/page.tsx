@@ -53,7 +53,7 @@ export default function Page() {
 
                         {/* Recipient Name */}
                         <h1 className="font-bold text-gray-300 text-center text-2xl p-4">
-                            Recipient Name
+                            Recipient
                         </h1>
                     </div>
 

@@ -12,7 +12,7 @@ export default function ChatReceiver() {
 
 
     return (
-        <div className="bg-gray-800 border-l border-b border-black relative py-5" style={{height:"8%"}}>
+        <div className="bg-gray-800 border-l border-b border-black relative flex items-center justify-center py-5" style={{height:"8%"}}>
             <button
                 onClick={toggleContactList}
                 className="absolute top-1/2 left-4 transform -translate-y-1/2 lg:hidden text-gray-400 p-2 focus:outline-none hover:text-gray-300"
