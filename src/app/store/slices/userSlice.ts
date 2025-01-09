@@ -62,8 +62,9 @@ export const autoLogin = createAsyncThunk(
                     return false;
                 }
                 const { accessToken, user } = await response.json();
-                console.log("[UserSlice] Log User", user)
+                console.log("[AutoLogin] Log User", user)
                 localStorage.setItem("authToken", accessToken);
+                localStorage.setItem("zchatuser", user.username);
                 dispatch(setError("")); // Clear any previous errors
                 dispatch(login(user.username))
                 return true
@@ -92,8 +93,10 @@ export const loginUser = createAsyncThunk(
             }
 
             const data = await response.json();
+            console.log(data)
             localStorage.setItem("authToken", data.accessToken);
-            localStorage.setItem("refreshToken", data.refreshToken)
+            localStorage.setItem("refreshToken", data.refreshToken);
+            localStorage.setItem("zchatuser", data.user.username);
             dispatch(setError("")); // Clear any previous errors
             dispatch(login(username))
             console.log('sampai sebelum ke /chat', username)

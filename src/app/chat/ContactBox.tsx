@@ -14,6 +14,7 @@ export default function ContactBox() {
     const handleLogout = () => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('refreshToken');
+        localStorage.removeItem('zchatuser');
         window.location.href = "/login";
     };
 

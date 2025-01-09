@@ -41,11 +41,11 @@ export async function POST(req: Request) {
                 );
             }
         } else {
-            await prisma.user.update({
+            const user = await prisma.user.update({
                 where: { username },
                 data: { refreshToken },
             });
-            return NextResponse.json({ accessToken, refreshToken, newUser }, { status: 200 });
+            return NextResponse.json({ user, accessToken, refreshToken, newUser }, { status: 200 });
         }
     } else {
         try{

@@ -23,6 +23,7 @@ export default function ContactList() {
     useEffect(() => {
         socket.on(`contactList`, (contact) => {
             console.log(`Received New Contact ${contact.username}`)
+            
             dispatch(receiveContact(contact))
         })
         return () => {
