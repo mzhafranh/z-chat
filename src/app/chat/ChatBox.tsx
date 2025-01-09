@@ -87,7 +87,7 @@ export default function ChatBox() {
                                     }}
                                     required
                                 />
-                                <button className="w-9 h-9 bg-amber-500 text-white rounded-lg flex items-center justify-center align-bottom hover:bg-amber-600 focus:outline-none focus:ring focus:ring-amber-300">
+                                <button className="w-11 h-10 bg-amber-500 text-white rounded-lg flex items-center justify-center align-bottom hover:bg-amber-600 focus:outline-none focus:ring focus:ring-amber-300">
                                     <FontAwesomeIcon icon={faPaperPlane} className="fa-lg" />
                                 </button>
                             </div>
