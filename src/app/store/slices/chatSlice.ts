@@ -5,6 +5,12 @@ interface getContactsParams {
   username: string;
 }
 
+interface addNotificationParams {
+  token: string | null,
+  senderId: string,
+  recipientId: string
+}
+
 interface Contact {
   id: string,
   username: string,
@@ -172,7 +178,7 @@ export const sendMessage = createAsyncThunk(
       recipientId: recipient,
       timestamp: new Date().toISOString(),
     }))
-    
+
     try {
 
       const response = await fetch(`/api/chat/`, {
@@ -205,7 +211,7 @@ export const resendMessage = createAsyncThunk(
   'chat/resendMessage',
   async ({ token, tempMessageId, message, sender, recipient }: resendMessageParams, { dispatch, rejectWithValue }) => {
     console.log("trying resend tempMessage", tempMessageId)
-    
+
     try {
       const response = await fetch(`/api/chat/`, {
         method: 'POST',
@@ -269,8 +275,8 @@ export const readMessage = createAsyncThunk(
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          senderId: senderId, 
-          recipientId: recipientId, 
+          senderId: senderId,
+          recipientId: recipientId,
         }),
       });
       if (!response.ok) {
@@ -280,7 +286,7 @@ export const readMessage = createAsyncThunk(
       } else {
         const data = await response.json();
         console.log("Message read successfully");
-        return data; 
+        return data;
       }
     } catch (error) {
       console.log("Failed to update message", error);
@@ -302,6 +308,28 @@ export const getContacts = createAsyncThunk(
       });
 
       if (!response.ok) throw new Error('Failed to get contacts');
+      const data = await response.json();
+      return data; // Message data
+    } catch (err) {
+      console.log(err);
+    }
+  }
+)
+
+export const addNotification = createAsyncThunk(
+  'chat/addNotification',
+  async ({ token, senderId, recipientId }: addNotificationParams, { dispatch }) => {
+    try {
+      const response = await fetch("/api/chat/messages/notification", {
+        method: "POST",
+        headers: { 'Authorization': `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          senderId,
+          recipientId
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to get notification');
       const data = await response.json();
       return data; // Message data
     } catch (err) {
@@ -349,20 +377,12 @@ const chatSlice = createSlice({
       state.messageList.unshift(action.payload)
     },
     updateEditedMessage: (state, action) => {
-      let newMessageList = state.messageList.map((message) => 
+      let newMessageList = state.messageList.map((message) =>
         message.id === action.payload.data.id
-            ? { ...message, content: action.payload.data.content, updatedAt: action.payload.data.updatedAt } 
-            : message
-      ); 
+          ? { ...message, content: action.payload.data.content, updatedAt: action.payload.data.updatedAt }
+          : message
+      );
       state.messageList = newMessageList
-    },
-    addNotification: (state, action) => {
-      let newContactList = state.contactList.map((contact) => 
-        contact.username === action.payload
-            ? { ...contact, totalNotifications: contact.totalNotifications + 1 } 
-            : contact
-      ); 
-      state.contactList = newContactList
     },
     addTempMessage: (state, action) => {
       state.tempMessageList.unshift(action.payload)
@@ -458,11 +478,11 @@ const chatSlice = createSlice({
       .addCase(editMessage.fulfilled, (state, action) => {
         console.log(`Action editMessage is fulfilled`);
         state.loading = false;
-        let newMessageList = state.messageList.map((message) => 
+        let newMessageList = state.messageList.map((message) =>
           message.id === action.payload.data.id
-              ? { ...message, content: action.payload.data.content, updatedAt: action.payload.data.updatedAt } 
-              : message
-        ); 
+            ? { ...message, content: action.payload.data.content, updatedAt: action.payload.data.updatedAt }
+            : message
+        );
         state.messageList = newMessageList
       })
       .addCase(editMessage.rejected, (state, action) => {
@@ -478,11 +498,11 @@ const chatSlice = createSlice({
       .addCase(readMessage.fulfilled, (state, action) => {
         console.log(`Action readMessage is fulfilled`);
         state.loading = false;
-        let newContactList = state.contactList.map((contact) => 
+        let newContactList = state.contactList.map((contact) =>
           contact.username === action.payload.contact
-              ? { ...contact, totalNotifications: 0 } 
-              : contact
-        ); 
+            ? { ...contact, totalNotifications: 0 }
+            : contact
+        );
         state.contactList = newContactList
       })
       .addCase(readMessage.rejected, (state, action) => {
@@ -497,9 +517,29 @@ const chatSlice = createSlice({
       })
       .addCase(deleteMessage.rejected, (state, action) => {
         state.error = "failed to delete message";
-      });
+      })
+      .addCase(addNotification.pending, (state) => {
+        console.log(`Action addNotification is pending`);
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addNotification.fulfilled, (state, action) => {
+        console.log(`Action addNotification is fulfilled`);
+        state.loading = false;
+        let newContactList = state.contactList.map((contact) =>
+          contact.username === action.payload.senderId
+            ? { ...contact, totalNotifications: action.payload.totalNotifications }
+            : contact
+        );
+        state.contactList = newContactList
+      })
+      .addCase(addNotification.rejected, (state, action) => {
+        console.log(`Action addNotification is rejected`);
+        state.loading = false;
+        state.error = "failed to get notification";
+      })
   },
 });
 
-export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage, setChatAccessTime, addTempMessage, removeTempMessage, receiveContact, toggleContactListState, updateEditedMessage, addNotification } = chatSlice.actions;
+export const { setCurrentContact, clearChat, setPage, setTotalPage, receiveMessage, setChatAccessTime, addTempMessage, removeTempMessage, receiveContact, toggleContactListState, updateEditedMessage } = chatSlice.actions;
 export default chatSlice.reducer;

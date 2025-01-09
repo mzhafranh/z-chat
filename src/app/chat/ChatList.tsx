@@ -30,7 +30,7 @@ export default function ChatList() {
                 dispatch(receiveMessage(message))
                 console.log("ReceiveMessage executed")
             } else {
-                dispatch(addNotification(message.senderId))
+                dispatch(addNotification({token, senderId: message.senderId, recipientId: message.recipientId}))
                 console.log("addNotification executed")
             }
         })

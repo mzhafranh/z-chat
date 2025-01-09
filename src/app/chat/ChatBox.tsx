@@ -40,7 +40,7 @@ export default function ChatBox() {
             socket.on(`${username}`, (message) => {
                 console.log(`Received chatbox message on ${username}`)
                 if (message.recipientId === username) {
-                    dispatch(addNotification(message.senderId))
+                    dispatch(addNotification({token, senderId: message.senderId, recipientId: message.recipientId}))
                     console.log("addNotification executed")
                 }
             })
