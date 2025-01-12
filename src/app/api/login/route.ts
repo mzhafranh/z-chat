@@ -74,7 +74,7 @@ export async function PUT(req: Request) {
         // Validate input
         if (!username) {
             return NextResponse.json(
-                { error: "User ID is required." },
+                { error: "Username is required." },
                 { status: 400 }
             );
         }

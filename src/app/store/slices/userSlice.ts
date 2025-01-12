@@ -13,6 +13,11 @@ interface verifyTokenParams {
     token: string;
 }
 
+interface deleteTokenParams {
+    token: string | null;
+    username: string;
+}
+
 interface UserState {
     username: string;
     isAuthenticated: boolean;
@@ -132,6 +137,32 @@ export const verifyToken = createAsyncThunk(
     }
 )
 
+export const deleteToken = createAsyncThunk(
+    'user/deleteToken',
+    async ({ token, username }: deleteTokenParams, { dispatch }) => {
+        try {
+            const response = await fetch("/api/login", {
+                method: "PUT",
+                headers: { 'Authorization': `Bearer ${token}`,"Content-Type": "application/json" },
+                body: JSON.stringify({
+                   username
+                })
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                dispatch(setError(data.error || "Token Verification Failed"));
+                return false;
+            } else {
+                return true;
+            }
+        } catch (err) {
+            dispatch(setError("An error occurred while logging in."));
+            console.error(err);
+        }
+    }
+)
+
 
 const userSlice = createSlice({
     name: 'user',
@@ -145,7 +176,7 @@ const userSlice = createSlice({
             state.username = "";
             state.isAuthenticated = false;
         },
-        setError: (state, action) => { state.error = action.payload }
+        setError: (state, action) => { state.error = action.payload }        
     },
 });
 

@@ -4,8 +4,10 @@ import { AppDispatch, RootState } from "../store/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { toggleContactListState } from "../store/slices/chatSlice";
+import { deleteToken } from "../store/slices/userSlice";
 
 export default function ContactBox() {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     const dispatch = useDispatch<AppDispatch>();
     const { isContactListOpen } = useSelector((state: RootState) => state.chat);
     const { username } = useSelector((state: RootState) => state.user);
@@ -16,6 +18,7 @@ export default function ContactBox() {
         localStorage.removeItem('authToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('zchatuser');
+        dispatch(deleteToken({token, username}))
         window.location.href = "/login";
     };
 
