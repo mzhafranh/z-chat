@@ -141,8 +141,8 @@ export const deleteToken = createAsyncThunk(
     'user/deleteToken',
     async ({ token, username }: deleteTokenParams, { dispatch }) => {
         try {
-            const response = await fetch("/api/login", {
-                method: "PUT",
+            const response = await fetch("/api/logout", {
+                method: "POST",
                 headers: { 'Authorization': `Bearer ${token}`,"Content-Type": "application/json" },
                 body: JSON.stringify({
                    username
