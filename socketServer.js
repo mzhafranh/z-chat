@@ -9,7 +9,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: true, // Allow your Next.js app to connect
+        origin: true, 
         methods: ["GET", "POST"],
     },
 });
@@ -17,13 +17,7 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
-    // socket.on("message", (data) => {
-    //     console.log("Message received:", data);
-    //     io.emit("message", data); // Broadcast the message to all clients
-    // });
-
     socket.onAny((eventName, data) => {
-        console.log("Message received:", data);
         io.emit(eventName, data);
     })
 
@@ -32,7 +26,7 @@ io.on("connection", (socket) => {
     });
 });
 
-const PORT = 3001; // Port for Socket.IO server
+const PORT = 3001;
 server.listen(PORT, () => {
     console.log(`Socket.IO server is running on port ${PORT}`);
 });

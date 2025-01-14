@@ -86,14 +86,11 @@ interface ChatState {
   isContactListOpen: boolean
 }
 
-// Example: Fetch chat messages from an API
 export const fetchMessages = createAsyncThunk(
   'chat/fetchMessages',
   async ({ senderId, recipientId, token, page, chatAccessTime }: fetchMessagesParams, { dispatch, rejectWithValue }) => {
     try {
-      console.log("fetchMessage - senderId:", senderId)
-      console.log("fetchMessage - recipientId:", recipientId)
-      console.log("fetchMessage - page:", page)
+
       const response = await fetch(`/api/chat/messages`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -110,7 +107,6 @@ export const fetchMessages = createAsyncThunk(
       dispatch(setTotalPage(data.pagination.totalPages))
       return data; // The payload for fulfilled
     } catch (error) {
-      console.log("Error fetching messages", error)
       return rejectWithValue(error || 'An unexpected error occurred');
     }
   }
@@ -120,8 +116,6 @@ export const refreshMessages = createAsyncThunk(
   'chat/refreshMessages',
   async ({ senderId, recipientId, token }: refreshMessagesParams, { dispatch, rejectWithValue }) => {
     try {
-      console.log("refreshMessage - senderId:", senderId)
-      console.log("refreshMessage - recipientId:", recipientId)
       const response = await fetch(`/api/chat/messages`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -137,7 +131,6 @@ export const refreshMessages = createAsyncThunk(
       dispatch(setTotalPage(data.pagination.totalPages))
       return data; // The payload for fulfilled
     } catch (error) {
-      console.log("Error refresh messages", error)
       return rejectWithValue(error || 'An unexpected error occurred');
     }
   }
@@ -145,7 +138,7 @@ export const refreshMessages = createAsyncThunk(
 
 export const deleteMessage = createAsyncThunk(
   'chat/deleteMessage',
-  async ({ token, id }: deleteMessageParams, { dispatch }) => {
+  async ({ token, id }: deleteMessageParams, { dispatch,  rejectWithValue }) => {
     try {
       const response = await fetch("/api/chat/messages", {
         method: "DELETE",
@@ -158,8 +151,8 @@ export const deleteMessage = createAsyncThunk(
       if (!response.ok) throw new Error('Failed to delete message');
       const data = await response.json();
       return data; // Message data
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      return rejectWithValue(error || 'An unexpected error occurred');
     }
   }
 )
@@ -168,8 +161,6 @@ export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
   async ({ token, message, sender, recipient }: sendMessageParams, { dispatch, rejectWithValue }) => {
     const tempMessageId = new Date().toISOString()
-    console.log("trying to addTempMessage", tempMessageId)
-
 
     dispatch(addTempMessage({
       id: tempMessageId,
@@ -192,16 +183,13 @@ export const sendMessage = createAsyncThunk(
       });
       if (!response.ok) {
         const error = await response.json()
-        console.log('Failed to send message', error);
         return rejectWithValue(error || 'An unexpected error occurred');
       } else {
         const data = await response.json();
-        console.log("Message sent successfully");
         dispatch(removeTempMessage(tempMessageId))
         return data; // Message data
       }
     } catch (error) {
-      console.log("Failed to send message", error);
       return rejectWithValue(error || 'An unexpected error occurred');
     }
   }
@@ -210,8 +198,6 @@ export const sendMessage = createAsyncThunk(
 export const resendMessage = createAsyncThunk(
   'chat/resendMessage',
   async ({ token, tempMessageId, message, sender, recipient }: resendMessageParams, { dispatch, rejectWithValue }) => {
-    console.log("trying resend tempMessage", tempMessageId)
-
     try {
       const response = await fetch(`/api/chat/`, {
         method: 'POST',
@@ -224,16 +210,13 @@ export const resendMessage = createAsyncThunk(
       });
       if (!response.ok) {
         const error = await response.json()
-        console.log('Failed to send message', error);
         return rejectWithValue(error || 'An unexpected error occurred');
       } else {
         const data = await response.json();
-        console.log("Message sent successfully");
         dispatch(removeTempMessage(tempMessageId))
         return data; // Message data
       }
     } catch (error) {
-      console.log("Failed to send message", error);
       return rejectWithValue(error || 'An unexpected error occurred');
     }
   }
@@ -253,15 +236,12 @@ export const editMessage = createAsyncThunk(
       });
       if (!response.ok) {
         const error = await response.json()
-        console.log('Failed to edit message', error);
         return rejectWithValue(error || 'An unexpected error occurred');
       } else {
         const data = await response.json();
-        console.log("Message edited successfully");
         return data; // Message data
       }
     } catch (error) {
-      console.log("Failed to send message", error);
       return rejectWithValue(error || 'An unexpected error occurred');
     }
   }
@@ -281,15 +261,12 @@ export const readMessage = createAsyncThunk(
       });
       if (!response.ok) {
         const error = await response.json()
-        console.log('Failed to update message', error);
         return rejectWithValue(error || 'An unexpected error occurred');
       } else {
         const data = await response.json();
-        console.log("Message read successfully");
         return data;
       }
     } catch (error) {
-      console.log("Failed to update message", error);
       return rejectWithValue(error || 'An unexpected error occurred');
     }
   }
@@ -297,7 +274,7 @@ export const readMessage = createAsyncThunk(
 
 export const getContacts = createAsyncThunk(
   'chat/getContacts',
-  async ({ token, username }: getContactsParams, { dispatch }) => {
+  async ({ token, username }: getContactsParams, { dispatch, rejectWithValue }) => {
     try {
       const response = await fetch("/api/user/contacts", {
         method: "POST",
@@ -310,8 +287,8 @@ export const getContacts = createAsyncThunk(
       if (!response.ok) throw new Error('Failed to get contacts');
       const data = await response.json();
       return data; // Message data
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      return rejectWithValue(error || 'An unexpected error occurred');
     }
   }
 )
@@ -333,7 +310,6 @@ export const addNotification = createAsyncThunk(
       const data = await response.json();
       return data; // Message data
     } catch (err) {
-      console.log(err);
     }
   }
 )
@@ -388,7 +364,6 @@ const chatSlice = createSlice({
       state.tempMessageList.unshift(action.payload)
     },
     removeTempMessage: (state, action) => {
-      console.log("RemoveTempMessage", action.payload)
       state.tempMessageList = state.tempMessageList.filter(
         (message) => message.id !== action.payload
       );
@@ -441,42 +416,34 @@ const chatSlice = createSlice({
         state.error = "failed to refresh messages";
       })
       .addCase(sendMessage.pending, (state) => {
-        console.log(`Action sendMessage is pending`);
         state.loading = true;
         state.error = null;
       })
       .addCase(sendMessage.fulfilled, (state, action) => {
-        console.log(`Action sendMessage is fulfilled`);
         state.loading = false;
         state.messageList.unshift(action.payload);
       })
       .addCase(sendMessage.rejected, (state, action) => {
-        console.log(`Action sendMessage is rejected`);
         state.loading = false;
         state.error = "failed to send message";
       })
       .addCase(resendMessage.pending, (state) => {
-        console.log(`Action resendMessage is pending`);
         state.loading = true;
         state.error = null;
       })
       .addCase(resendMessage.fulfilled, (state, action) => {
-        console.log(`Action resendMessage is fulfilled`);
         state.loading = false;
         state.messageList.unshift(action.payload);
       })
       .addCase(resendMessage.rejected, (state, action) => {
-        console.log(`Action resendMessage is rejected`);
         state.loading = false;
         state.error = "failed to send message";
       })
       .addCase(editMessage.pending, (state) => {
-        console.log(`Action editMessage is pending`);
         state.loading = true;
         state.error = null;
       })
       .addCase(editMessage.fulfilled, (state, action) => {
-        console.log(`Action editMessage is fulfilled`);
         state.loading = false;
         let newMessageList = state.messageList.map((message) =>
           message.id === action.payload.data.id
@@ -486,17 +453,14 @@ const chatSlice = createSlice({
         state.messageList = newMessageList
       })
       .addCase(editMessage.rejected, (state, action) => {
-        console.log(`Action editMessage is rejected`);
         state.loading = false;
         state.error = "failed to edit message";
       })
       .addCase(readMessage.pending, (state) => {
-        console.log(`Action readMessage is pending`);
         state.loading = true;
         state.error = null;
       })
       .addCase(readMessage.fulfilled, (state, action) => {
-        console.log(`Action readMessage is fulfilled`);
         state.loading = false;
         let newContactList = state.contactList.map((contact) =>
           contact.username === action.payload.contact
@@ -506,7 +470,6 @@ const chatSlice = createSlice({
         state.contactList = newContactList
       })
       .addCase(readMessage.rejected, (state, action) => {
-        console.log(`Action readMessage is rejected`);
         state.loading = false;
         state.error = "failed to send message";
       })
@@ -519,12 +482,10 @@ const chatSlice = createSlice({
         state.error = "failed to delete message";
       })
       .addCase(addNotification.pending, (state) => {
-        console.log(`Action addNotification is pending`);
         state.loading = true;
         state.error = null;
       })
       .addCase(addNotification.fulfilled, (state, action) => {
-        console.log(`Action addNotification is fulfilled`);
         state.loading = false;
         let newContactList = state.contactList.map((contact) =>
           contact.username === action.payload.senderId
@@ -534,7 +495,6 @@ const chatSlice = createSlice({
         state.contactList = newContactList
       })
       .addCase(addNotification.rejected, (state, action) => {
-        console.log(`Action addNotification is rejected`);
         state.loading = false;
         state.error = "failed to get notification";
       })

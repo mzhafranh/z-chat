@@ -1,7 +1,6 @@
 import prisma from "../../../../lib/prisma";
 import { NextResponse } from "next/server";
 
-// POST handler
 export async function POST(req: Request) {
     let body;
     try {
@@ -21,8 +20,6 @@ export async function POST(req: Request) {
             { status: 400 }
         );
     }
-
-    console.log("username:",username)
 
     try {
         const user = await prisma.user.create({

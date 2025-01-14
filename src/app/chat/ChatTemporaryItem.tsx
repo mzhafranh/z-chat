@@ -28,7 +28,6 @@ const ChatTemporaryItem: React.FC<ChatItemProps> = ({ id, content, senderId, rec
         const messageData = await dispatch(resendMessage({ token, tempMessageId: id, message: content, sender: username, recipient: recipientId }))
         if (messageData.meta.requestStatus === "fulfilled") {
             socket.emit(`${recipientId}`, messageData.payload)
-            console.log("socket emit from resend on",recipientId)
         }
     };
 

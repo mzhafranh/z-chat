@@ -48,7 +48,7 @@ export async function PUT(req: Request) {
             where: {
                 senderId,
                 recipientId,
-                isRead: false, // Update only unread messages
+                isRead: false,
             },
             data: {
                 isRead: true,

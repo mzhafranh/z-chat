@@ -26,12 +26,7 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId,
     const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
     const socket = getSocket()
 
-
     const { username } = useSelector((state: RootState) => state.user);
-
-    // useEffect(() => {
-    //     console.log("[MesssageList]",content, updatedAt);
-    // }, []);
 
     const onDelete = () => {
         dispatch(deleteMessage({ token, id }));
@@ -42,7 +37,6 @@ const ChatItem: React.FC<ChatItemProps> = ({ id, content, senderId, recipientId,
             const editedMessage = await dispatch(editMessage({ token, id, newContent: editedContent }));
             if (editedMessage.meta.requestStatus === "fulfilled") {
                 socket.emit(`${recipientId}-edit`, editedMessage.payload)
-                console.log(`socket emit on ${recipientId}-edit`)
             }
         }
         setIsEditing(false);

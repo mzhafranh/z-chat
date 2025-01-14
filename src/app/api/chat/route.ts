@@ -10,7 +10,6 @@ export async function GET() {
         });
         return NextResponse.json(messages, { status: 200 });
     } catch (error) {
-        console.log("Error fetching messages:", error);
         return NextResponse.json(
             { error: "Failed to fetch messages" },
             { status: 500 }
@@ -21,10 +20,7 @@ export async function GET() {
 export async function POST(req: Request) {
     try {
       const body = await req.json();
-      const { content, senderId, recipientId } = body;
-
-      console.log(content, senderId, recipientId)
-  
+      const { content, senderId, recipientId } = body;  
       if (!content || !senderId || !recipientId) {
         return NextResponse.json(
           { error: "Content, senderId, and recipientId are required" },

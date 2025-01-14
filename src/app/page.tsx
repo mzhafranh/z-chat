@@ -4,29 +4,30 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "./store/store";
 import { useEffect } from "react";
 import { verifyToken } from "./store/slices/userSlice";
+import { useRouter } from 'next/navigation'
 
 
 export default function Home() {
+  const router = useRouter()
   const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (!token) {
-        window.location.href = "/login";
+        router.push("/login")
     } else {
         dispatch(verifyToken({ token }))
             .then((action) => {
-                // console.log("Verified:", action.payload);
                 if (!action.payload) {
-                  window.location.href = "/login";
+                  router.push("/login")
                 } else {
-                  window.location.href = "/chat";
+                  router.push("/chat")
                 }
             })
             .catch((err) => {
                 console.error("Error verifying token:", err);
-                window.location.href = "/login";
-            });
+                router.push("/login")
+              });
       
     }
 }, [token, dispatch]);

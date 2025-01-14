@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import ChatList from "./ChatList";
 import ChatReceiver from "./ChatReceiver";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,18 +17,17 @@ export default function ChatBox() {
     const { username } = useSelector((state: RootState) => state.user);
     const socket = getSocket()
 
-    const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent the default form submission behavior
+    const handleSubmit = async (e: any) => {
+        e.preventDefault(); 
 
         if (!message.trim()) {
-            return; // Don't send an empty message
+            return; 
         }
 
         if (socket) {
             const messageData = await dispatch(sendMessage({ token, message, sender: username, recipient: currentContact }))
             if (messageData.meta.requestStatus === "fulfilled") {
                 socket.emit(`${currentContact}`, messageData.payload)
-                console.log("socket emit on", currentContact)
             }
             setMessage("")
         }
@@ -38,10 +37,8 @@ export default function ChatBox() {
     useEffect(() => {
         if (socket) {
             socket.on(`${username}`, (message) => {
-                console.log(`Received chatbox message on ${username}`)
                 if (message.recipientId === username) {
                     dispatch(addNotification({token, senderId: message.senderId, recipientId: message.recipientId}))
-                    console.log("addNotification executed")
                 }
             })
             return () => {
@@ -49,10 +46,6 @@ export default function ChatBox() {
             }
         }
     }, [socket])
-
-    // useEffect(() => {
-    //     console.log("currentContact", currentContact)
-    // }, []);
 
     return (
         <div className="w-full lg:w-9/12 h-full flex flex-col">
@@ -79,9 +72,9 @@ export default function ChatBox() {
                                     }}
                                     className="block w-full mr-2 text px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-gray-100 shadow-md focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 resize-none overflow-y-auto scrollbar-custom"
                                     placeholder="Write a message..."
-                                    rows={1} // Sets the initial height
+                                    rows={1}
                                     style={{ minHeight: "40px", maxHeight: "100px" }} // Controls the maximum height
-                                    onInput={(e) => {
+                                    onInput={(e: any) => {
                                         e.target.style.height = "auto"; // Reset the height
                                         e.target.style.height = `${e.target.scrollHeight}px`; // Set the new height based on content
                                     }}

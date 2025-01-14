@@ -5,7 +5,6 @@ import { createAccessToken, createRefreshToken } from '../helpers/util';
 export async function POST(req: Request) {
     const authHeader = req.headers.get('authorization');
     const refreshToken = authHeader?.split(' ')[1];
-    console.log("refreshtoken:", refreshToken)
     let newUser = false
     if (!refreshToken) {
         let body

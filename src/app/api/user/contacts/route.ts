@@ -14,7 +14,6 @@ export async function POST(req: Request) {
 
     try {
         const { username } = body;
-        // Fetch all users
         const users = await prisma.user.findMany({
             select: {
                 id: true,
@@ -22,7 +21,6 @@ export async function POST(req: Request) {
             },
         });
 
-        // Map users and fetch total notifications for each
         const usersWithNotifications = await Promise.all(
             users.map(async (user: { id: string; username: string; }) => {
                 let totalNotifications = await prisma.message.count({

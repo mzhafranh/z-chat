@@ -5,9 +5,11 @@ import ChatContainer from "./ChatContainer";
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from "../store/store";
 import { login, verifyToken } from "../store/slices/userSlice";
+import { useRouter } from 'next/navigation'
 
 
 export default function Page() {
+  const router = useRouter()
   const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
   const currentUser = typeof window !== 'undefined' ? localStorage.getItem('zchatuser') : null;
   const dispatch = useDispatch<AppDispatch>();
@@ -16,20 +18,18 @@ export default function Page() {
 
   useEffect(() => {
     if (!token || !currentUser) {
-      window.location.href = "/login";
+      router.push('/login')
     } else {
       dispatch(login(currentUser))
       dispatch(verifyToken({ token }))
         .then((action) => {
-          // Access the payload returned by the thunk
-          console.log("Verified:", action.payload);
           if (!action.payload) {
-            window.location.href = "/login";
+            router.push('/login')
           }
         })
         .catch((err) => {
           console.error("Error verifying token:", err);
-          window.location.href = "/login";
+          router.push('/login')
         });
     }
   }, [token, dispatch]);

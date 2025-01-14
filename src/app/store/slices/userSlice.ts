@@ -36,21 +36,14 @@ export const autoLogin = createAsyncThunk(
     'user/autoLogin',
     async ({refreshToken}: autoLoginParams, { dispatch, rejectWithValue }) => {
         try {
-            console.log("refreshToken", refreshToken)
             if (!refreshToken) {
-                console.log("Auto Login: No Refresh Token Detected")
                 return;
             } else {
-                if (!process.env.JWT_REFRESH_SECRET) {
-                    throw new Error("JWT_REFRESH_SECRET is not defined in the environment variables.");
-                }
                 jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => {
                     if (err) {
                         if (err.name === 'TokenExpiredError') {
-                            console.log('Token expired');
                             return 
                         }
-                        console.log('Invalid token');
                         return 
                     }
                 });
@@ -70,7 +63,6 @@ export const autoLogin = createAsyncThunk(
                     return false;
                 }
                 const { accessToken, user } = await response.json();
-                console.log("[AutoLogin] Log User", user)
                 localStorage.setItem("authToken", accessToken);
                 localStorage.setItem("zchatuser", user.username);
                 dispatch(setError("")); // Clear any previous errors
@@ -101,15 +93,12 @@ export const loginUser = createAsyncThunk(
             }
 
             const data = await response.json();
-            console.log(data)
             localStorage.setItem("authToken", data.accessToken);
             localStorage.setItem("refreshToken", data.refreshToken);
             localStorage.setItem("zchatuser", data.user.username);
-            dispatch(setError("")); // Clear any previous errors
+            dispatch(setError(""));
             dispatch(login(username))
-            console.log('sampai sebelum ke /chat', username)
             return data
-            // window.location.href = '/chat'
         } catch (err) {
             dispatch(setError("An error occurred while logging in."));
             console.error(err);

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { jwtVerify } from "jose";
 
-export async function middleware(req) {
+export async function middleware(req: { headers: { get: (arg0: string) => any; }; nextUrl: { pathname: any; }; }) {
     const authHeader = req.headers.get('authorization'); // Get the Authorization header
     const token = authHeader?.split(' ')[1]; // Extract the token after "Bearer"
 
@@ -20,8 +20,6 @@ export async function middleware(req) {
         // Use jose for token verification
         const secret = new TextEncoder().encode(process.env.JWT_SECRET);
         const { payload } = await jwtVerify(token, secret);
-
-        console.log("Token payload:", payload); // The decoded JWT payload
 
         return NextResponse.next();
     } catch (err) {

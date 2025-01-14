@@ -75,7 +75,6 @@ export async function POST(req: Request) {
         );
 
     } catch (error) {
-        console.log("Error fetching messages:", error);
         return NextResponse.json(
             { error: "Failed to fetch messages" },
             { status: 500 }

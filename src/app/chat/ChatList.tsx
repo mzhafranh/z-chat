@@ -25,13 +25,10 @@ export default function ChatList() {
 
     useEffect(() => {
         socket.on(`${username}`, (message) => {
-            console.log(`Received Message on ${username}`)
             if (message.senderId === currentContactRef.current && message.recipientId === username) {
                 dispatch(receiveMessage(message))
-                console.log("ReceiveMessage executed")
             } else {
                 dispatch(addNotification({token, senderId: message.senderId, recipientId: message.recipientId}))
-                console.log("addNotification executed")
             }
         })
         return () => {
@@ -41,10 +38,7 @@ export default function ChatList() {
 
     useEffect(() => {
         socket.on(`${username}-edit`, (message) => {
-            console.log(`Received Edit Message on ${username}`)
-            console.log(message)
             if (message.data.senderId === currentContactRef.current && message.data.recipientId === username) {
-                console.log("Receive Edit Message executed")
                 dispatch(updateEditedMessage(message))
             }
         })
@@ -57,7 +51,6 @@ export default function ChatList() {
         if (chatContainerRef.current && !isFetching && page < totalPage) {
             const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
             const isNearTop = ((-1) * scrollTop) + clientHeight > scrollHeight - 100;
-            // console.log((((-1) * scrollTop) + clientHeight), (scrollHeight - 100))
 
             if (isNearTop) {
                 setIsFetching(true);

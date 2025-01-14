@@ -7,7 +7,6 @@ export async function POST(req: Request) {
         const body = await req.json();
         const { username } = body;
 
-        // Validate input
         if (!username) {
             return NextResponse.json(
                 { error: "Username is required." },
@@ -15,7 +14,6 @@ export async function POST(req: Request) {
             );
         }
 
-        // Update the user to remove the refresh token
         const updatedUser = await prisma.user.update({
             where: { username: username },
             data: { refreshToken: null },
@@ -28,7 +26,7 @@ export async function POST(req: Request) {
     } catch (error) {
         console.error("Error during logout:", error);
         return NextResponse.json(
-            { error: "Failed to logout user.", details: error.message },
+            { error: "Failed to logout user.", details: error instanceof Error ? error.message : "Unknown error"},
             { status: 500 }
         );
     }

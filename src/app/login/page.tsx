@@ -22,8 +22,8 @@ export default function Page() {
       }
     }).catch((err) => {
       console.error("Error verifying token:", err);
-      window.location.href = "/login";
-  });
+      router.push('/login');
+    });
     
   }, []);
 

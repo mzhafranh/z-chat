@@ -5,8 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { toggleContactListState } from "../store/slices/chatSlice";
 import { deleteToken } from "../store/slices/userSlice";
+import { useRouter } from 'next/navigation'
+
 
 export default function ContactBox() {
+    const router = useRouter()
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     const dispatch = useDispatch<AppDispatch>();
     const { isContactListOpen } = useSelector((state: RootState) => state.chat);
@@ -19,7 +22,7 @@ export default function ContactBox() {
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('zchatuser');
         dispatch(deleteToken({token, username}))
-        window.location.href = "/login";
+        router.push('/login')
     };
 
     return (

@@ -21,9 +21,7 @@ export default function ContactList() {
     }, []);
 
     useEffect(() => {
-        socket.on(`contactList`, (contact) => {
-            console.log(`Received New Contact ${contact.username}`)
-            
+        socket.on(`contactList`, (contact) => {            
             dispatch(receiveContact(contact))
         })
         return () => {
@@ -43,8 +41,6 @@ export default function ContactList() {
         />
     )
     
-    // console.log(contactList)
-
     return (
         <div className="overflow-y-auto scrollbar-custom px-1 mr-1" style={{height:"92%"}}>
             {nodeList}
