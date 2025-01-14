@@ -18,7 +18,7 @@ export async function GET() {
     }
 }
 
-export async function POST(req) {
+export async function POST(req: Request) {
     try {
       const body = await req.json();
       const { content, senderId, recipientId } = body;
@@ -44,6 +44,6 @@ export async function POST(req) {
     } catch (error) {
       console.error("Error creating message:", error);
   
-      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+      return NextResponse.json({ error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
     }
   }

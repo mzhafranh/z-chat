@@ -1,7 +1,7 @@
 import prisma from "../../../../../lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function POST(req) {
+export async function POST(req: Request) {
     try {
         const body = await req.json();
         const { senderId, recipientId, page = 1, chatAccessTime = new Date() } = body;
@@ -83,7 +83,7 @@ export async function POST(req) {
     }
 }
 
-export async function PUT(req) {
+export async function PUT(req: Request) {
     try {
         const body = await req.json();
         const { id, newContent } = body;
@@ -103,13 +103,13 @@ export async function PUT(req) {
         return NextResponse.json({ message: 'Message updated successfully', data: updatedMessage }, { status: 200 });
     } catch (error) {
         return NextResponse.json(
-            { error: 'Failed to update the message', details: error.message },
+            { error: 'Failed to update the message', details: error instanceof Error ? error.message : "Unknown error" },
             { status: 500 }
         );
     }
 }
 
-export async function DELETE(req) {
+export async function DELETE(req: Request) {
     try {
         const body = await req.json();
         const { id } = body;
@@ -126,7 +126,7 @@ export async function DELETE(req) {
     } catch (error) {
         console.error('Error deleting message:', error);
         return NextResponse.json(
-            { error: 'Failed to delete the message', details: error.message },
+            { error: 'Failed to delete the message', details: error instanceof Error ? error.message : "Unknown error" },
             { status: 500 }
         );
     }

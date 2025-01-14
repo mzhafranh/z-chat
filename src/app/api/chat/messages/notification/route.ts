@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     } catch (error) {
         console.error("Error updating messages:", error);
         return NextResponse.json(
-            { error: "Failed to update messages", details: error.message },
+            { error: "Failed to update messages", details: error instanceof Error ? error.message : "Unknown error" },
             { status: 500 }
         );
     }
@@ -67,7 +67,7 @@ export async function PUT(req: Request) {
     } catch (error) {
         console.error("Error updating messages:", error);
         return NextResponse.json(
-            { error: "Failed to update messages", details: error.message },
+            { error: "Failed to update messages", details: error instanceof Error ? error.message : "Unknown error" },
             { status: 500 }
         );
     }

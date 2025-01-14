@@ -13,7 +13,7 @@ export async function POST(req: Request) {
             body = await req.json();
         } catch (error) {
             return NextResponse.json(
-                { error: "Invalid JSON payload", details: error.message },
+                { error: "Invalid JSON payload", details: error instanceof Error ? error.message : "Unknown error" },
                 { status: 400 }
             );
         }
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
                 return NextResponse.json({ user, accessToken, refreshToken, newUser }, { status: 200 });
             } catch (error) {
                 return NextResponse.json(
-                    { error: "Failed to create user", details: error.message },
+                    { error: "Failed to create user", details: error instanceof Error ? error.message : "Unknown error" },
                     { status: 500 }
                 );
             }
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
             const accessToken = createAccessToken(user.username);
             return NextResponse.json({ user, accessToken, refreshToken, newUser }, { status: 200 });
         } catch (error){
-            return NextResponse.json({ error: "Failed to find user", details: error.message }, { status: 500 })
+            return NextResponse.json({ error: "Failed to find user", details: error instanceof Error ? error.message : "Unknown error" }, { status: 500 })
         }
         
     }
