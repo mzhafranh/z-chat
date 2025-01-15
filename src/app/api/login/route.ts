@@ -55,8 +55,17 @@ export async function POST(req: Request) {
                 return NextResponse.json({ error: "Failed to find user"}, { status: 500 })
             }
 
-            const accessToken = createAccessToken(user.username);
-            return NextResponse.json({ user, accessToken, refreshToken, newUser }, { status: 200 });
+            let username = user.username
+
+            const newRefreshToken = createRefreshToken(username);
+            const accessToken = createAccessToken(username);
+
+            const updateUser = await prisma.user.update({
+                where: { username },
+                data: { refreshToken: newRefreshToken },
+            });
+
+            return NextResponse.json({ user, accessToken, newRefreshToken, newUser }, { status: 200 });
         } catch (error){
             return NextResponse.json({ error: "Failed to find user", details: error instanceof Error ? error.message : "Unknown error" }, { status: 500 })
         }

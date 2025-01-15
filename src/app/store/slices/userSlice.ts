@@ -62,7 +62,8 @@ export const autoLogin = createAsyncThunk(
                     dispatch(setError(data.error || "Login failed"));
                     return false;
                 }
-                const { accessToken, user } = await response.json();
+                const { accessToken, newRefreshToken, user } = await response.json();
+                localStorage.setItem("refreshToken", newRefreshToken);
                 localStorage.setItem("authToken", accessToken);
                 localStorage.setItem("zchatuser", user.username);
                 dispatch(setError("")); // Clear any previous errors
