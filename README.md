@@ -18,9 +18,9 @@ Tools used:
 6. Responsive UI
 
 ## Screenshot
-[<img src="https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_1.png" alt="screenshot z-chat 1" width="400" hspace="10" vspace="10"/>](https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_1.png)
-[<img src="https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_2.png" alt="screenshot z-chat 2" width="400" hspace="10" vspace="10"/>](https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_2.png)
-[<img src="https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_3.png" alt="screenshot z-chat 3" width="400" hspace="10" vspace="10"/>](https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_3.png)
-[<img src="https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_mobile_1.png" alt="screenshot z-chat 4" width="400" hspace="10" vspace="10"/>](https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_mobile_1.png)
-[<img src="https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_mobile_2.png" alt="screenshot z-chat 5" width="400" hspace="10" vspace="10"/>](https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_mobile_2.png)
+[<img src="https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_1.png" alt="screenshot z-chat 1" width="600" hspace="10" vspace="10"/>](https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_1.png)
+[<img src="https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_2.png" alt="screenshot z-chat 2" width="600" hspace="10" vspace="10"/>](https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_2.png)
+[<img src="https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_3.png" alt="screenshot z-chat 3" width="600" hspace="10" vspace="10"/>](https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_desktop_3.png)
+[<img src="https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_mobile_1.png" alt="screenshot z-chat 4" width="200" hspace="10" vspace="10"/>](https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_mobile_1.png)
+[<img src="https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_mobile_2.png" alt="screenshot z-chat 5" width="200" hspace="10" vspace="10"/>](https://raw.githubusercontent.com/mzhafranh/z-chat/master/screenshots/screenshot_mobile_2.png)
 
